@@ -8,19 +8,28 @@
 <link rel="manifest" href="/manifest.json" />
 <style>
   :root{
+    /* Standard TTS Variables */
     --green:#00c853; --green-dark:#009624;
     --red:#e53935; --white:#ffffff; --black:#0a0a0a;
     --surface:#141414; --surface-2:#1e1e1e;
     --border:#2a2a2a; --muted:#8a8a8a; --radius:14px;
+
+    /* Documentary Theme Variables (Purple/Red) */
+    --purple:#9d4edd; --purple-dark:#5a189a; --purple-glow:rgba(157,78,221,0.25);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     background:var(--black); color:var(--white); min-height:100vh;
-    padding:16px; padding-bottom:calc(16px + env(safe-area-inset-bottom));
+    padding:16px; padding-bottom:calc(90px + env(safe-area-inset-bottom)); /* Padding for bottom nav */
     max-width:720px; margin:0 auto;
   }
+
+  /* ---------- Views ---------- */
+  .view { display: none; animation: fadeIn 0.3s ease; }
+  .view.active { display: block; }
+
   header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 20px}
   .brand{display:flex;align-items:center;gap:10px}
   .logo{
@@ -35,6 +44,20 @@
     display:inline-block;width:8px;height:8px;border-radius:50%;
     background:var(--green);box-shadow:0 0 8px var(--green);margin-right:6px;
   }
+
+  /* ---------- Documentary Theme Overrides ---------- */
+  .doc-theme .logo { background:linear-gradient(135deg,var(--purple),var(--purple-dark)); box-shadow:0 0 24px var(--purple-glow); }
+  .doc-theme .brand span { color:var(--purple); }
+  .doc-theme .status-dot { background:var(--purple); box-shadow:0 0 8px var(--purple); }
+  .doc-theme textarea:focus { border-color:var(--purple); }
+  .doc-theme select:focus { border-color:var(--purple); }
+  .doc-theme .slider-row .val { color:var(--purple); }
+  .doc-theme input[type=range]::-webkit-slider-thumb { background:var(--purple); box-shadow:0 0 0 4px rgba(157,78,221,.2); }
+  .doc-theme .progress-label strong { color:var(--purple); }
+  .doc-theme .progress-fill { background:linear-gradient(90deg,var(--purple),#c77dff); box-shadow:0 0 12px var(--purple); }
+  .doc-theme .btn-primary { background:linear-gradient(135deg,var(--purple),var(--purple-dark)); color:var(--white); box-shadow:0 6px 24px var(--purple-glow); }
+
+  /* ---------- Cards & Elements ---------- */
   .card{
     background:var(--surface);border:1px solid var(--border);
     border-radius:var(--radius);padding:16px;margin-bottom:14px;
@@ -50,7 +73,6 @@
     padding:14px;font-size:15px;line-height:1.5;font-family:inherit;
     outline:none;transition:border-color .15s;
   }
-  textarea:focus{border-color:var(--green)}
   .meta{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--muted)}
   label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
   select{
@@ -60,22 +82,21 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;
   }
-  select:focus{border-color:var(--green)}
+  
+  /* ---------- Sliders ---------- */
   .slider-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
   @media(max-width:480px){.slider-row{grid-template-columns:1fr}}
-  .slider-row .val{font-size:12px;color:var(--green);font-weight:700;float:right}
+  .slider-row .val{font-size:12px;font-weight:700;float:right}
   input[type=range]{
     width:100%;height:6px;border-radius:3px;outline:none;
     background:var(--surface-2);appearance:none;margin:8px 0 4px;
   }
   input[type=range]::-webkit-slider-thumb{
     appearance:none;width:18px;height:18px;border-radius:50%;
-    background:var(--green);cursor:pointer;
-    box-shadow:0 0 0 4px rgba(0,200,83,.2);
+    cursor:pointer;
   }
-  input[type=range]::-moz-range-thumb{
-    width:18px;height:18px;border:none;border-radius:50%;background:var(--green);cursor:pointer;
-  }
+
+  /* ---------- Buttons ---------- */
   .btn{
     border:none;border-radius:10px;padding:14px 18px;
     font-size:15px;font-weight:700;cursor:pointer;
@@ -89,10 +110,11 @@
   .btn-ghost{background:transparent;color:var(--white);border:1px solid var(--border)}
   .btn-ghost:hover:not(:disabled){border-color:var(--green);color:var(--green)}
   .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  
+  /* ---------- Progress & Player ---------- */
   .progress-wrap{margin-top:12px;display:none}
   .progress-wrap.active{display:block}
   .progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
-  .progress-label strong{color:var(--green)}
   .progress-bar{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
   .progress-fill{
     height:100%;width:0%;background:linear-gradient(90deg,var(--green),#00e05f);
@@ -101,8 +123,10 @@
   .player{display:none;margin-top:12px}
   .player.active{display:block}
   audio{width:100%;margin-bottom:10px;border-radius:8px}
+
+  /* ---------- Toast & Offline ---------- */
   .toast{
-    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);
+    position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(120px);
     background:var(--surface-2);border:1px solid var(--border);color:var(--white);
     padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;
     transition:transform .3s cubic-bezier(.2,.9,.3,1.2);z-index:100;
@@ -119,88 +143,243 @@
   .offline.show{display:block}
   footer{text-align:center;font-size:12px;color:var(--muted);padding:20px 0 8px}
   footer a{color:var(--green);text-decoration:none}
+
+  /* ---------- Bottom Navigation ---------- */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 12px 10px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--muted); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+  }
+  .nav-item svg { width: 24px; height: 24px; transition: all 0.2s ease; }
+  .nav-item.active { color: var(--green); }
+  .nav-item.active svg { stroke: var(--green); filter: drop-shadow(0 0 8px rgba(0,200,83,.4)); }
+  .nav-item.active[data-color="purple"] { color: var(--purple); }
+  .nav-item.active[data-color="purple"] svg { stroke: var(--purple); filter: drop-shadow(0 0 8px var(--purple-glow)); }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
 
 <div class="offline" id="offlineBanner">⚠️ You are offline. TTS requires an internet connection.</div>
 
-<header>
-  <div class="brand">
-    <div class="logo">G1</div>
-    <div>
-      <h1>G1<span>-Voice</span></h1>
-      <div style="font-size:11px;color:var(--muted);margin-top:2px">
-        <span class="status-dot"></span><span id="voiceStatus">loading voices…</span>
+<!-- ================= SCREEN 1: STANDARD TTS (UNTOUCHED) ================= -->
+<div id="view-tts" class="view active">
+  <header>
+    <div class="brand">
+      <div class="logo">G1</div>
+      <div>
+        <h1>G1<span>-Voice</span></h1>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">
+          <span class="status-dot"></span><span id="voiceStatus">loading voices…</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="card">
+    <p class="card-title">Your Text</p>
+    <textarea id="text" placeholder="Type or paste anything — a sentence, an article, a whole book. G1-Voice splits it automatically."></textarea>
+    <div class="meta">
+      <span id="charCount">0 chars</span>
+      <span id="chunkCount">0 chunks</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Voice</p>
+    <label for="language">Language</label>
+    <select id="language"></select>
+    <div style="height:12px"></div>
+    <label for="voice">Voice</label>
+    <select id="voice"></select>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Effects</p>
+    <div class="slider-row">
+      <div>
+        <label>Pitch <span class="val" id="pitchVal">0</span></label>
+        <input type="range" id="pitch" min="-100" max="100" value="0" />
+      </div>
+      <div>
+        <label>Speed <span class="val" id="rateVal">0</span></label>
+        <input type="range" id="rate" min="-100" max="100" value="0" />
       </div>
     </div>
   </div>
-</header>
 
-<div class="card">
-  <p class="card-title">Your Text</p>
-  <textarea id="text" placeholder="Type or paste anything — a sentence, an article, a whole book. G1-Voice splits it automatically."></textarea>
-  <div class="meta">
-    <span id="charCount">0 chars</span>
-    <span id="chunkCount">0 chunks</span>
-  </div>
-</div>
+  <div class="card">
+    <button class="btn btn-primary" id="generateBtn">Generate Speech</button>
 
-<div class="card">
-  <p class="card-title">Voice</p>
-  <label for="language">Language</label>
-  <select id="language"></select>
-  <div style="height:12px"></div>
-  <label for="voice">Voice</label>
-  <select id="voice"></select>
-</div>
-
-<div class="card">
-  <p class="card-title">Effects</p>
-  <div class="slider-row">
-    <div>
-      <label>Pitch <span class="val" id="pitchVal">0</span></label>
-      <input type="range" id="pitch" min="-100" max="100" value="0" />
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span>Chunks ready</span>
+        <span><strong id="chunksDone">0</strong> / <span id="chunksTotal">0</span></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     </div>
-    <div>
-      <label>Speed <span class="val" id="rateVal">0</span></label>
-      <input type="range" id="rate" min="-100" max="100" value="0" />
+
+    <div class="player" id="player">
+      <audio id="audio" controls></audio>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="downloadBtn">Download MP3</button>
+        <button class="btn btn-danger" id="resetBtn">Reset</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="card">
-  <button class="btn btn-primary" id="generateBtn">Generate Speech</button>
-
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-label">
-      <span>Chunks ready</span>
-      <span><strong id="chunksDone">0</strong> / <span id="chunksTotal">0</span></span>
+<!-- ================= SCREEN 2: DOCUMENTARY STUDIO ================= -->
+<div id="view-doc" class="view doc-theme">
+  <header>
+    <div class="brand">
+      <div class="logo" style="font-size:16px;">🎬</div>
+      <div>
+        <h1>Docu<span>Studio</span></h1>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">
+          <span class="status-dot"></span> Cinematic Narration
+        </div>
+      </div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </header>
+
+  <div class="card" style="border-color: rgba(157, 78, 221, 0.3); background: linear-gradient(180deg, rgba(157, 78, 221, 0.05), transparent);">
+    <p class="card-title">Documentary Script</p>
+    <textarea id="docText" placeholder="Paste your script here. The 6 curated voices below are optimized for cinematic pacing and deep bass."></textarea>
+    <div class="meta">
+      <span id="docCharCount">0 chars</span>
+      <span id="docChunkCount">0 chunks</span>
+    </div>
   </div>
 
-  <div class="player" id="player">
-    <audio id="audio" controls></audio>
-    <div class="btn-row">
-      <button class="btn btn-ghost" id="downloadBtn">Download MP3</button>
-      <button class="btn btn-danger" id="resetBtn">Reset</button>
+  <div class="card">
+    <p class="card-title">Select Narrator</p>
+    <select id="docVoice">
+      <!-- 4 Males -->
+      <option value="13">Andrew (Male) — Deep, authoritative</option>
+      <option value="24">Steffan (Male) — Gritty, storytelling</option>
+      <option value="20">Guy (Male) — Classic news anchor</option>
+      <option value="16">Brian (Male) — Smooth, modern documentary</option>
+      <!-- 2 Females -->
+      <option value="14">Aria (Female) — Clear, engaging narrator</option>
+      <option value="21">Jenny (Female) — Warm, natural storytelling</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Narration Style</p>
+    <div class="slider-row">
+      <div>
+        <label>Pitch <span class="val" id="docPitchVal">-5</span></label>
+        <input type="range" id="docPitch" min="-100" max="100" value="-5" />
+      </div>
+      <div>
+        <label>Speed <span class="val" id="docRateVal">-10</span></label>
+        <input type="range" id="docRate" min="-100" max="100" value="-10" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-primary" id="docGenerateBtn">Generate Narration</button>
+
+    <div class="progress-wrap" id="docProgressWrap">
+      <div class="progress-label">
+        <span>Chunks ready</span>
+        <span><strong id="docChunksDone">0</strong> / <span id="docChunksTotal">0</span></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="docProgressFill"></div></div>
+    </div>
+
+    <div class="player" id="docPlayer">
+      <audio id="docAudio" controls></audio>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="docDownloadBtn">Download MP3</button>
+        <button class="btn btn-danger" id="docResetBtn">Reset</button>
+      </div>
     </div>
   </div>
 </div>
 
-<footer>
-  Powered by <a href="https://freeapi.pro/speech" target="_blank" rel="noopener">FreeApi.Pro</a> · 580+ voices · 100% free
-</footer>
+<!-- ================= BOTTOM NAVIGATION ================= -->
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="switchTab('tts')" id="nav-tts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+    Standard TTS
+  </div>
+  <div class="nav-item" data-color="purple" onclick="switchTab('doc')" id="nav-doc">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>
+    Documentary
+  </div>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// --- Global Navigation Logic ---
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById(`view-${tab}`).classList.add('active');
+  document.getElementById(`nav-${tab}`).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
 const VOICES_API = 'https://freeapi.pro/api/voices?t=' + Date.now();
 const TTS_API = '/api/tts'; 
 const CHUNK_SIZE = 200;
 const CONCURRENCY = 3;
 
+let toastTimer;
+function toast(msg,type=''){
+  const toastEl = document.getElementById('toast');
+  toastEl.textContent=msg; 
+  toastEl.className='toast show '+type;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toastEl.classList.remove('show'),3000);
+}
+
+// --- Shared Utility ---
+function splitText(text,max){
+  const clean=text.replace(/\r\n/g,'\n').trim();
+  if(!clean) return [];
+  if(clean.length<=max) return [clean];
+  const sentences=clean.match(/[^.!?\n]+[.!?\n]*/g)||[clean];
+  const chunks=[]; let buf='';
+  const push=()=>{ if(buf.trim()) chunks.push(buf.trim()); buf=''; };
+  for(let s of sentences){
+    s=s.trim(); if(!s) continue;
+    if(s.length>max){
+      push();
+      const words=s.split(/\s+/); let wbuf='';
+      for(const w of words){
+        if((wbuf+' '+w).trim().length>max){
+          if(wbuf) chunks.push(wbuf.trim());
+          wbuf=w;
+        } else { wbuf=(wbuf+' '+w).trim(); }
+      }
+      if(wbuf) chunks.push(wbuf.trim());
+      continue;
+    }
+    if((buf+' '+s).trim().length>max){ push(); buf=s; }
+    else { buf=(buf+' '+s).trim(); }
+  }
+  push(); return chunks;
+}
+
+// ==========================================
+// SCREEN 1: STANDARD TTS (DO NOT TOUCH)
+// ==========================================
 const $ = id => document.getElementById(id);
 const textEl=$('text'), charCount=$('charCount'), chunkCount=$('chunkCount');
 const langSelect=$('language'), voiceSelect=$('voice');
@@ -208,16 +387,9 @@ const pitchEl=$('pitch'), rateEl=$('rate'), pitchVal=$('pitchVal'), rateVal=$('r
 const genBtn=$('generateBtn'), progressWrap=$('progressWrap');
 const chunksDone=$('chunksDone'), chunksTotal=$('chunksTotal'), progressFill=$('progressFill');
 const player=$('player'), audioEl=$('audio'), downloadBtn=$('downloadBtn'), resetBtn=$('resetBtn');
-const voiceStatus=$('voiceStatus'), toastEl=$('toast'), offlineBanner=$('offlineBanner');
+const voiceStatus=$('voiceStatus'), offlineBanner=$('offlineBanner');
 
 let VOICES=[], GROUPED={}, lastBlobUrl=null;
-
-let toastTimer;
-function toast(msg,type=''){
-  toastEl.textContent=msg; toastEl.className='toast show '+type;
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>toastEl.classList.remove('show'),3000);
-}
 
 async function loadVoices(){
   try{
@@ -245,33 +417,6 @@ async function loadVoices(){
 function populateVoiceSelect(){
   const list=GROUPED[langSelect.value]||[];
   voiceSelect.innerHTML=list.map(v=>`<option value="${v.index}">${v.name} — ${v.gender}</option>`).join('');
-}
-
-function splitText(text,max){
-  const clean=text.replace(/\r\n/g,'\n').trim();
-  if(!clean) return [];
-  if(clean.length<=max) return [clean];
-  const sentences=clean.match(/[^.!?\n]+[.!?\n]*/g)||[clean];
-  const chunks=[]; let buf='';
-  const push=()=>{ if(buf.trim()) chunks.push(buf.trim()); buf=''; };
-  for(let s of sentences){
-    s=s.trim(); if(!s) continue;
-    if(s.length>max){
-      push();
-      const words=s.split(/\s+/); let wbuf='';
-      for(const w of words){
-        if((wbuf+' '+w).trim().length>max){
-          if(wbuf) chunks.push(wbuf.trim());
-          wbuf=w;
-        } else { wbuf=(wbuf+' '+w).trim(); }
-      }
-      if(wbuf) chunks.push(wbuf.trim());
-      continue;
-    }
-    if((buf+' '+s).trim().length>max){ push(); buf=s; }
-    else { buf=(buf+' '+s).trim(); }
-  }
-  push(); return chunks;
 }
 
 async function synthesizeChunk(chunk,voiceIndex,pitch,rate){
@@ -347,24 +492,7 @@ function resetGenButton(){
   genBtn.textContent='Generate Speech';
 }
 
-function download(){
-  if(!lastBlobUrl) return;
-  const a=document.createElement('a');
-  a.href=lastBlobUrl;
-  a.download='g1-voice-'+Date.now()+'.mp3';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-function reset(){
-  if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
-  audioEl.removeAttribute('src'); audioEl.load();
-  player.classList.remove('active');
-  progressWrap.classList.remove('active');
-  progressFill.style.width='0%';
-}
-
+// Standard Listeners
 textEl.addEventListener('input',()=>{
   const t=textEl.value;
   charCount.textContent=t.length+' chars';
@@ -375,9 +503,141 @@ langSelect.addEventListener('change',populateVoiceSelect);
 pitchEl.addEventListener('input',()=>pitchVal.textContent=pitchEl.value);
 rateEl.addEventListener('input',()=>rateVal.textContent=rateEl.value);
 genBtn.addEventListener('click',generate);
-downloadBtn.addEventListener('click',download);
-resetBtn.addEventListener('click',reset);
 
+downloadBtn.addEventListener('click',()=>{
+  if(!lastBlobUrl) return;
+  const a=document.createElement('a');
+  a.href=lastBlobUrl;
+  a.download='g1-voice-'+Date.now()+'.mp3';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+resetBtn.addEventListener('click',()=>{
+  if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
+  audioEl.removeAttribute('src'); audioEl.load();
+  player.classList.remove('active');
+  progressWrap.classList.remove('active');
+  progressFill.style.width='0%';
+});
+
+
+// ==========================================
+// SCREEN 2: DOCUMENTARY STUDIO (ISOLATED)
+// ==========================================
+const docText = $('docText'), docCharCount = $('docCharCount'), docChunkCount = $('docChunkCount');
+const docVoice = $('docVoice'), docPitch = $('docPitch'), docRate = $('docRate');
+const docPitchVal = $('docPitchVal'), docRateVal = $('docRateVal');
+const docGenBtn = $('docGenerateBtn'), docProgressWrap = $('docProgressWrap');
+const docChunksDone = $('docChunksDone'), docChunksTotal = $('docChunksTotal'), docProgressFill = $('docProgressFill');
+const docPlayer = $('docPlayer'), docAudio = $('docAudio'), docDownloadBtn = $('docDownloadBtn'), docResetBtn = $('docResetBtn');
+
+let docLastBlobUrl = null;
+
+// Doc sliders
+docPitch.addEventListener('input',()=>docPitchVal.textContent=docPitch.value);
+docRate.addEventListener('input',()=>docRateVal.textContent=docRate.value);
+
+// Doc character count
+docText.addEventListener('input',()=>{
+  const t=docText.value;
+  docCharCount.textContent=t.length+' chars';
+  const chunks=splitText(t,CHUNK_SIZE);
+  docChunkCount.textContent=chunks.length+' chunk'+(chunks.length===1?'':'s');
+});
+
+// Doc Generate logic (Explicitly isolated)
+docGenBtn.addEventListener('click', async () => {
+  const text = docText.value.trim();
+  if(!text){ toast('Enter some text first','error'); return; }
+  
+  const voiceIndex = parseInt(docVoice.value,10);
+  const pitch = parseInt(docPitch.value,10);
+  const rate = parseInt(docRate.value,10);
+
+  const chunks = splitText(text, CHUNK_SIZE);
+  if(!chunks.length){ toast('Nothing to synthesize','error'); return; }
+
+  docPlayer.classList.remove('active');
+  if(docLastBlobUrl){ URL.revokeObjectURL(docLastBlobUrl); docLastBlobUrl = null; }
+  
+  docProgressWrap.classList.add('active');
+  docChunksTotal.textContent = chunks.length;
+  docChunksDone.textContent = '0';
+  docProgressFill.style.width = '0%';
+  docGenBtn.disabled = true;
+  docGenBtn.textContent = 'Synthesizing…';
+
+  const results = new Array(chunks.length);
+  let done = 0, failed = 0, cursor = 0;
+
+  async function worker(){
+    while(true){
+      const i = cursor++;
+      if(i >= chunks.length) return;
+      try {
+        const res = await fetch(TTS_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ voiceIndex, text: chunks[i], pitch, rate })
+        });
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        const blob = await res.blob();
+        if(!blob.size) throw new Error('Empty audio');
+        results[i] = blob;
+      } catch(e) {
+        failed++; results[i] = null;
+        console.error('Chunk ' + i + ' failed:', e);
+      }
+      done++;
+      docChunksDone.textContent = done;
+      docProgressFill.style.width = (done/chunks.length*100).toFixed(1)+'%';
+    }
+  }
+
+  await Promise.all(Array.from({length:Math.min(CONCURRENCY,chunks.length)},worker));
+
+  const blobs = results.filter(Boolean);
+  if(!blobs.length){
+    toast('All chunks failed — try again','error');
+    resetDocBtn();
+    return;
+  }
+
+  const merged = new Blob(blobs, {type:'audio/mpeg'});
+  docLastBlobUrl = URL.createObjectURL(merged);
+  docAudio.src = docLastBlobUrl;
+  docPlayer.classList.add('active');
+  
+  toast(failed ? `${failed} chunk(s) failed — audio may have gaps` : 'Narration ready!', failed ? 'error' : 'success');
+  resetDocBtn();
+});
+
+function resetDocBtn(){
+  docGenBtn.disabled = false;
+  docGenBtn.textContent = 'Generate Narration';
+}
+
+docDownloadBtn.addEventListener('click', () => {
+  if(!docLastBlobUrl) return;
+  const a = document.createElement('a');
+  a.href = docLastBlobUrl;
+  a.download = 'g1-documentary-' + Date.now() + '.mp3';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+docResetBtn.addEventListener('click', () => {
+  if(docLastBlobUrl){ URL.revokeObjectURL(docLastBlobUrl); docLastBlobUrl = null; }
+  docAudio.removeAttribute('src'); docAudio.load();
+  docPlayer.classList.remove('active');
+  docProgressWrap.classList.remove('active');
+  docProgressFill.style.width = '0%';
+});
+
+// --- Initialization ---
 function updateOnline(){ offlineBanner.classList.toggle('show',!navigator.onLine); }
 window.addEventListener('online',updateOnline);
 window.addEventListener('offline',updateOnline);
