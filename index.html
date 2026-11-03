@@ -424,7 +424,8 @@ function switchTab(tab) {
 }
 
 // --- Global Variables ---
-const VOICES_API = 'https://freeapi.pro/api/voices';
+// Added a timestamp to prevent browser caching
+const VOICES_API = 'https://freeapi.pro/api/voices?t=' + Date.now();
 const TTS_API = '/api/tts'; 
 const CHUNK_SIZE = 200; 
 const CONCURRENCY = 3;  
