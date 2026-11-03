@@ -1,0 +1,8 @@
+{
+  "name": "g1-voice",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "edge-tts-universal": "^1.4.0"
+  }
+}
