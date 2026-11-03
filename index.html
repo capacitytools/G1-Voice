@@ -204,8 +204,8 @@
 <script>
 const VOICES_API = 'https://freeapi.pro/api/voices';
 const TTS_API = '/api/tts'; 
-const CHUNK_SIZE = 200; // Lowered for Edge TTS stability
-const CONCURRENCY = 6;
+const CHUNK_SIZE = 200; // 200 is the sweet spot for Edge TTS
+const CONCURRENCY = 3;  // Lowered to 3 to prevent Microsoft from dropping connections
 
 const $ = id => document.getElementById(id);
 const textEl=$('text'), charCount=$('charCount'), chunkCount=$('chunkCount');
@@ -338,7 +338,7 @@ async function generate(){
       let attempts = 0;
       let lastError = null;
 
-      // Retry up to 3 times if the API throws an error
+      // Retry up to 3 times
       while (!success && attempts < 3) {
         try {
           results[i] = await synthesizeChunk(chunks[i], voiceIndex, pitch, rate);
