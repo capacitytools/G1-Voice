@@ -1,6 +1,5 @@
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 
-// Map FreeApi indexes to Microsoft Edge TTS voice names
 const VOICE_MAP = {
   1: "en-US-AndrewMultilingualNeural",
   2: "en-US-AvaMultilingualNeural",
@@ -33,32 +32,24 @@ export default async function handler(req, res) {
 
   try {
     const { voiceIndex, text, pitch, rate } = req.body;
-    
-    // Look up the voice. Default to Aria if not mapped.
     const voiceName = VOICE_MAP[voiceIndex] || "en-US-AriaNeural";
 
-    // Edge TTS expects strings like "+10%" for rate and "+5Hz" for pitch
     const rateStr = rate ? `${rate > 0 ? '+' : ''}${rate}%` : "+0%";
     const pitchStr = pitch ? `${pitch > 0 ? '+' : ''}${pitch}Hz` : "+0Hz";
 
-    // Initialize the TTS engine
     const tts = new MsEdgeTTS();
     await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
     
-    // Synthesize (it returns a stream)
     const { audioStream } = tts.toStream(text, { rate: rateStr, pitch: pitchStr });
 
-    // Collect the stream into a buffer
     const chunks = [];
     for await (const chunk of audioStream) {
       chunks.push(chunk);
     }
     const buffer = Buffer.concat(chunks);
 
-    // Clean up the connection
     tts.close();
 
-    // Send back the MP3
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Content-Length', buffer.length);
     res.status(200).send(buffer);
