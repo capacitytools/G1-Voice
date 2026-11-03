@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
 <meta name="theme-color" content="#09090b" />
 <title>G1-Voice Studio</title>
-<link rel="manifest" href="/manifest.json" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -328,9 +327,7 @@
   </div>
 
   <div class="card">
-    <button class="btn btn-primary gen-btn" id="genBtn-std">
-      Generate Audio
-    </button>
+    <button class="btn btn-primary gen-btn" id="genBtn-std">Generate Audio</button>
     
     <div class="debug-box debug-box-el"></div>
     
@@ -399,9 +396,7 @@
   </div>
 
   <div class="card">
-    <button class="btn btn-primary gen-btn" id="genBtn-doc">
-      Generate Narration
-    </button>
+    <button class="btn btn-primary gen-btn" id="genBtn-doc">Generate Narration</button>
     
     <div class="debug-box debug-box-el"></div>
     
@@ -469,7 +464,7 @@ function initTTSModule(prefix, isDoc) {
   const textEl = $(`text`);
   const charCount = $(`charCount`);
   const chunkCount = $(`chunkCount`);
-  const genBtn = $(`genBtn`);
+  const genBtn = $(`genBtn`); // This correctly finds genBtn-std or genBtn-doc
   const player = document.querySelector(`#view-${prefix} .player-el`);
   const audioEl = document.querySelector(`#view-${prefix} .audio-el`);
   const progressWrap = document.querySelector(`#view-${prefix} .progress-wrap-el`);
@@ -495,6 +490,7 @@ function initTTSModule(prefix, isDoc) {
     chunkCount.textContent=chunks.length+' chunk'+(chunks.length===1?'':'s');
   });
 
+  // Added back the event listener to make the button clickable!
   genBtn.addEventListener('click', async () => {
     const text=textEl.value.trim();
     if(!text){ toast('Enter some text first','error'); return; }
