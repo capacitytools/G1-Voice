@@ -116,6 +116,13 @@
     margin-bottom:12px;font-weight:600;text-align:center;
   }
   .offline.show{display:block}
+  /* DEBUGGER STYLE */
+  .debug-box {
+    display: none; background: rgba(229, 57, 53, 0.1); border: 1px solid var(--red);
+    color: #ff8a85; padding: 12px; border-radius: 10px; font-size: 13px;
+    margin-top: 12px; font-family: monospace; word-break: break-all;
+  }
+  .debug-box.active { display: block; }
   footer{text-align:center;font-size:12px;color:var(--muted);padding:20px 0 8px}
   footer a{color:var(--green);text-decoration:none}
 </style>
@@ -171,6 +178,9 @@
 <div class="card">
   <button class="btn btn-primary" id="generateBtn">Generate Speech</button>
 
+  <!-- DEBUG BOX IS HERE -->
+  <div class="debug-box" id="debugBox"></div>
+
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-label">
       <span>Chunks ready</span>
@@ -195,8 +205,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// Set to '' because we are now routing TTS through our own Vercel proxy 
-// to bypass CORS restrictions. We still use the full URL for loading voices.
+// Use the Vercel proxy for TTS, direct URL for voices
 const VOICES_API = 'https://freeapi.pro/api/voices';
 const TTS_API = '/api/tts'; 
 const CHUNK_SIZE = 1950;
@@ -210,6 +219,7 @@ const genBtn=$('generateBtn'), progressWrap=$('progressWrap');
 const chunksDone=$('chunksDone'), chunksTotal=$('chunksTotal'), progressFill=$('progressFill');
 const player=$('player'), audioEl=$('audio'), downloadBtn=$('downloadBtn'), resetBtn=$('resetBtn');
 const voiceStatus=$('voiceStatus'), toastEl=$('toast'), offlineBanner=$('offlineBanner');
+const debugBox=$('debugBox');
 
 let VOICES=[], GROUPED={}, lastBlobUrl=null;
 
@@ -276,15 +286,24 @@ function splitText(text,max){
 }
 
 async function synthesizeChunk(chunk,voiceIndex,pitch,rate){
-  // This now calls the Vercel proxy!
   const res=await fetch(TTS_API,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({voiceIndex,text:chunk,pitch,rate})
   });
-  if(!res.ok) throw new Error('TTS HTTP '+res.status);
+  
+  if(!res.ok) {
+    // If the proxy fails, try to read the error text to show the user
+    let errText = 'HTTP ' + res.status;
+    try { 
+      const data = await res.json(); 
+      if (data.error) errText += ' - ' + data.error; 
+    } catch(e) {}
+    throw new Error(errText);
+  }
+  
   const blob=await res.blob();
-  if(!blob.size) throw new Error('Empty audio');
+  if(!blob.size) throw new Error('Empty audio returned');
   return blob;
 }
 
@@ -300,7 +319,11 @@ async function generate(){
   if(!chunks.length){ toast('Nothing to synthesize','error'); return; }
 
   player.classList.remove('active');
+  debugBox.classList.remove('active');
+  debugBox.textContent = '';
+  
   if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
+  
   progressWrap.classList.add('active');
   chunksTotal.textContent=chunks.length;
   chunksDone.textContent='0';
@@ -320,6 +343,10 @@ async function generate(){
       }catch(e){
         failed++; results[i]=null;
         console.error('Chunk '+i+' failed:',e);
+        
+        // SHOW EXACT ERROR ON SCREEN
+        debugBox.classList.add('active');
+        debugBox.textContent = "⚠️ Error: " + e.message;
       }
       done++;
       chunksDone.textContent=done;
@@ -331,7 +358,7 @@ async function generate(){
 
   const blobs=results.filter(Boolean);
   if(!blobs.length){
-    toast('All chunks failed — try again','error');
+    toast('All chunks failed — check error message','error');
     resetGenButton();
     return;
   }
@@ -340,7 +367,14 @@ async function generate(){
   lastBlobUrl=URL.createObjectURL(merged);
   audioEl.src=lastBlobUrl;
   player.classList.add('active');
-  toast(failed?`${failed} chunk(s) failed — audio may have gaps`:'Speech ready!',failed?'error':'success');
+  
+  if (failed) {
+    toast(`${failed} chunk(s) failed — audio may have gaps`, 'error');
+  } else {
+    toast('Speech ready!','success');
+    debugBox.classList.remove('active'); // hide box if it worked
+  }
+  
   resetGenButton();
 }
 
@@ -364,6 +398,7 @@ function reset(){
   audioEl.removeAttribute('src'); audioEl.load();
   player.classList.remove('active');
   progressWrap.classList.remove('active');
+  debugBox.classList.remove('active');
   progressFill.style.width='0%';
 }
 
