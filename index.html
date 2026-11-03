@@ -195,7 +195,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const API_BASE = 'https://freeapi.pro';
+// Set to '' because we are now routing TTS through our own Vercel proxy 
+// to bypass CORS restrictions. We still use the full URL for loading voices.
+const VOICES_API = 'https://freeapi.pro/api/voices';
+const TTS_API = '/api/tts'; 
 const CHUNK_SIZE = 1950;
 const CONCURRENCY = 6;
 
@@ -219,7 +222,7 @@ function toast(msg,type=''){
 
 async function loadVoices(){
   try{
-    const res=await fetch(`${API_BASE}/api/voices`);
+    const res=await fetch(VOICES_API);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     if(!data.success) throw new Error('API failure');
@@ -273,7 +276,8 @@ function splitText(text,max){
 }
 
 async function synthesizeChunk(chunk,voiceIndex,pitch,rate){
-  const res=await fetch(`${API_BASE}/api/tts`,{
+  // This now calls the Vercel proxy!
+  const res=await fetch(TTS_API,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({voiceIndex,text:chunk,pitch,rate})
@@ -302,7 +306,7 @@ async function generate(){
   chunksDone.textContent='0';
   progressFill.style.width='0%';
   genBtn.disabled=true;
-  genBtn.textContent='Synthesizing…';
+  genBtn.textContent='Synthesizing...';
 
   const results=new Array(chunks.length);
   let done=0, failed=0, cursor=0;
