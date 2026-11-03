@@ -464,7 +464,10 @@ function initTTSModule(prefix, isDoc) {
   const textEl = $(`text`);
   const charCount = $(`charCount`);
   const chunkCount = $(`chunkCount`);
-  const genBtn = $(`genBtn`); // This correctly finds genBtn-std or genBtn-doc
+  
+  // FIX: Ensure we target the actual button element by its full ID
+  const genBtn = document.getElementById(`genBtn-${prefix}`); 
+  
   const player = document.querySelector(`#view-${prefix} .player-el`);
   const audioEl = document.querySelector(`#view-${prefix} .audio-el`);
   const progressWrap = document.querySelector(`#view-${prefix} .progress-wrap-el`);
@@ -490,7 +493,7 @@ function initTTSModule(prefix, isDoc) {
     chunkCount.textContent=chunks.length+' chunk'+(chunks.length===1?'':'s');
   });
 
-  // Added back the event listener to make the button clickable!
+  // Attach the click event
   genBtn.addEventListener('click', async () => {
     const text=textEl.value.trim();
     if(!text){ toast('Enter some text first','error'); return; }
