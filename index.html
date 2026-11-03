@@ -3,212 +3,263 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-<meta name="theme-color" content="#0a0a0a" />
-<title>G1-Voice</title>
+<meta name="theme-color" content="#09090b" />
+<title>G1-Voice Studio</title>
 <link rel="manifest" href="/manifest.json" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #00e676; --green-dark: #00b248; --green-glow: rgba(0, 230, 118, 0.25);
-    --purple: #9d4edd; --purple-dark: #5a189a; --purple-glow: rgba(157, 78, 221, 0.25);
-    --red: #ff5252; --red-dark: #d90429;
-    --white: #ffffff; --black: #000000;
-    --bg-base: #09090b; --surface: #141417; --border: #27272a;
-    --text-main: #f4f4f5; --text-muted: #a1a1aa;
-    --radius-lg: 20px; --radius-md: 14px; --radius-sm: 10px;
+    /* Standard TTS (Green) */
+    --green: #10b981; 
+    --green-hover: #059669;
+    --green-glow: rgba(16, 185, 129, 0.2);
+    
+    /* Documentary (Purple/Red) */
+    --purple: #8b5cf6; 
+    --purple-hover: #7c3aed;
+    --purple-glow: rgba(139, 92, 246, 0.2);
+    --red: #ef4444; 
+    
+    /* Neutral Palette */
+    --bg-base: #09090b; 
+    --surface: rgba(24, 24, 27, 0.6); 
+    --surface-border: rgba(255, 255, 255, 0.08);
+    --text-main: #f8fafc; 
+    --text-muted: #94a3b8;
+    
+    --radius-xl: 24px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
   
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-base); color: var(--text-main); min-height: 100vh;
-    padding: 16px; padding-bottom: calc(90px + env(safe-area-inset-bottom));
-    max-width: 600px; margin: 0 auto; line-height: 1.5; -webkit-font-smoothing: antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-base); 
+    color: var(--text-main); 
+    min-height: 100vh;
+    padding: 20px 16px; 
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    max-width: 600px; 
+    margin: 0 auto; 
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at top center, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+    background-repeat: no-repeat;
   }
 
-  /* ---------- Views / Screens ---------- */
-  .view { display: none; animation: fadeIn 0.3s ease; }
+  /* ---------- Views ---------- */
+  .view { display: none; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .view.active { display: block; }
 
-  /* ---------- Ad Bar ---------- */
-  .ad-bar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  /* ---------- Ad Banner ---------- */
+  .ad-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
   .ad-item {
-    position: relative; overflow: hidden; background: rgba(20, 20, 23, 0.8);
-    border: 1px solid rgba(0, 230, 118, 0.2); border-radius: var(--radius-md);
-    padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
-    text-decoration: none; color: var(--white); transition: all 0.3s ease; backdrop-filter: blur(10px);
+    position: relative; overflow: hidden; 
+    background: rgba(24, 24, 27, 0.5);
+    border: 1px solid var(--surface-border); 
+    border-radius: var(--radius-lg);
+    padding: 16px; display: flex; align-items: center; 
+    text-decoration: none; color: var(--text-main); 
+    transition: all 0.3s ease;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   }
-  .ad-item:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green-glow); }
-  .ad-item.red { border-color: rgba(255, 82, 82, 0.2); }
-  .ad-item.red:hover { border-color: var(--red); box-shadow: 0 0 15px rgba(255, 82, 82, 0.2); }
+  .ad-item:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
   .ad-item::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-    transform: skewX(-20deg); animation: shimmer 4s infinite;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    transform: skewX(-20deg); animation: shimmer 5s infinite;
   }
   @keyframes shimmer { 100% { left: 200%; } }
-  .ad-icon { font-size: 24px; margin-right: 14px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; }
+  .ad-icon { font-size: 24px; margin-right: 16px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
   .ad-content { flex: 1; }
-  .ad-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
-  .ad-title .star { color: var(--green); font-size: 12px; }
+  .ad-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; letter-spacing: -0.2px; }
+  .ad-title .star { color: var(--green); font-size: 14px; }
   .ad-item.red .ad-title .star { color: var(--red); }
-  .ad-desc { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
-  .ad-arrow { font-size: 18px; color: var(--text-muted); margin-left: 10px; transition: transform 0.2s; }
-  .ad-item:hover .ad-arrow { transform: translateX(4px); color: var(--green); }
-  .ad-item.red:hover .ad-arrow { color: var(--red); }
+  .ad-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+  .ad-arrow { font-size: 20px; color: var(--text-muted); margin-left: 12px; transition: transform 0.2s; }
+  .ad-item:hover .ad-arrow { transform: translateX(4px); color: var(--text-main); }
 
   /* ---------- Header ---------- */
-  header { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px 24px; }
-  .brand { display: flex; align-items: center; gap: 12px; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 32px; }
+  .brand { display: flex; align-items: center; gap: 16px; }
   .logo {
-    width: 42px; height: 42px; border-radius: 12px;
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    display: grid; place-items: center; font-weight: 800; font-size: 20px; color: var(--black);
-    box-shadow: 0 4px 20px var(--green-glow);
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--green), var(--green-hover));
+    display: grid; place-items: center; font-weight: 800; font-size: 22px; color: #000;
+    box-shadow: 0 8px 24px var(--green-glow);
   }
-  .brand-text h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.5px; }
+  .brand-text h1 { font-size: 24px; margin: 0 0 6px; font-weight: 800; letter-spacing: -0.5px; }
   .brand-text h1 span { color: var(--green); }
   .status-pill {
-    font-size: 11px; font-weight: 600; color: var(--green); background: rgba(0, 230, 118, 0.1);
-    padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px;
+    font-size: 12px; font-weight: 600; color: var(--green); 
+    background: rgba(16, 185, 129, 0.1); padding: 4px 12px; 
+    border-radius: 20px; display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
   }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
 
   /* ---------- Documentary Theme Overrides ---------- */
   .doc-theme .brand-text h1 span { color: var(--purple); }
-  .doc-theme .logo { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); box-shadow: 0 4px 20px var(--purple-glow); }
-  .doc-theme .status-pill { color: var(--purple); background: rgba(157, 78, 221, 0.1); }
-  .doc-theme .status-dot { background: var(--purple); box-shadow: 0 0 8px var(--purple); }
-  .doc-theme .card:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.1); }
-  .doc-theme textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.1); }
-  .doc-theme .slider-header .val { color: var(--purple); background: rgba(157, 78, 221, 0.1); }
-  .doc-theme input[type=range]::-webkit-slider-thumb { background: var(--purple); box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--purple-glow); }
-  .doc-theme .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: var(--white); box-shadow: 0 8px 24px var(--purple-glow); }
+  .doc-theme .logo { background: linear-gradient(135deg, var(--purple), var(--purple-hover)); box-shadow: 0 8px 24px var(--purple-glow); }
+  .doc-theme .status-pill { color: var(--purple); background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.2); }
+  .doc-theme .status-dot { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+  .doc-theme .card:focus-within { border-color: rgba(139, 92, 246, 0.4); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+  .doc-theme textarea:focus { border-color: rgba(139, 92, 246, 0.5); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+  .doc-theme .slider-header .val { color: var(--purple); }
+  .doc-theme input[type=range]::-webkit-slider-thumb { background: var(--purple); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2); }
+  .doc-theme .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-hover)); color: #fff; box-shadow: 0 8px 24px var(--purple-glow); }
   .doc-theme .progress-label strong { color: var(--purple); }
   .doc-theme .progress-fill { background: linear-gradient(90deg, var(--purple), #c77dff); }
+  .doc-theme body { background-image: radial-gradient(circle at top center, rgba(139, 92, 246, 0.05) 0%, transparent 40%); }
 
-  /* ---------- Cards & Elements ---------- */
+  /* ---------- Cards ---------- */
   .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: transform 0.2s ease, border-color 0.2s ease;
+    background: var(--surface); 
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-xl); 
+    padding: 24px; margin-bottom: 20px;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
-  .card-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin: 0 0 16px; font-weight: 700; }
+  .card:focus-within { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
+  .card-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 0 0 16px; letter-spacing: 0.5px; }
 
+  /* ---------- Inputs ---------- */
   textarea {
-    width: 100%; min-height: 160px; resize: vertical; background: var(--bg-base); color: var(--text-main);
-    border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; font-size: 16px;
-    line-height: 1.6; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%; min-height: 160px; resize: vertical; 
+    background: rgba(0,0,0,0.2); color: var(--text-main);
+    border: 1px solid var(--surface-border); border-radius: var(--radius-lg); 
+    padding: 16px; font-size: 16px; line-height: 1.6; font-family: inherit; 
+    outline: none; transition: all 0.3s ease;
   }
+  textarea:focus { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); background: rgba(0,0,0,0.4); }
   textarea::placeholder { color: #52525b; }
   
-  .meta { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
-  .meta span { background: var(--bg-base); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
-
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media(max-width: 480px) { .row { grid-template-columns: 1fr; } }
-  label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+  .meta { display: flex; justify-content: space-between; margin-top: 14px; font-size: 13px; color: var(--text-muted); font-weight: 500; }
   
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width: 480px) { .row { grid-template-columns: 1fr; } }
+  
+  label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
   .select-wrapper { position: relative; }
   .select-wrapper::after {
     content: "▼"; font-size: 10px; color: var(--text-muted);
     position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none;
   }
   select {
-    width: 100%; background: var(--bg-base); color: var(--text-main);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
-    padding: 14px 16px; font-size: 15px; outline: none; appearance: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%; background: rgba(0,0,0,0.2); color: var(--text-main);
+    border: 1px solid var(--surface-border); border-radius: var(--radius-md);
+    padding: 14px 16px; font-size: 15px; font-weight: 500; outline: none; appearance: none;
+    transition: all 0.3s ease;
   }
+  select:focus { border-color: rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); }
+  select option { background: var(--bg-base); color: var(--text-main); }
 
-  .slider-group { margin-bottom: 20px; }
+  /* ---------- Sliders ---------- */
+  .slider-group { margin-bottom: 24px; }
   .slider-group:last-child { margin-bottom: 0; }
-  .slider-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+  .slider-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center; }
   .slider-header label { margin: 0; }
-  .slider-header .val { font-size: 13px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+  .slider-header .val { font-size: 14px; font-weight: 700; color: var(--green); background: rgba(16, 185, 129, 0.1); padding: 2px 10px; border-radius: 8px; }
   
-  input[type=range] { width: 100%; height: 6px; border-radius: 3px; outline: none; background: var(--bg-base); appearance: none; border: 1px solid var(--border); }
-  input[type=range]::-webkit-slider-thumb {
-    appearance: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
-    transition: transform 0.1s;
+  input[type=range] { 
+    width: 100%; height: 6px; border-radius: 4px; outline: none; 
+    background: rgba(255,255,255,0.1); appearance: none; 
   }
+  input[type=range]::-webkit-slider-thumb {
+    appearance: none; width: 24px; height: 24px; border-radius: 50%; 
+    background: var(--green); cursor: pointer;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.3); }
   input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
 
+  /* ---------- Buttons ---------- */
   .btn {
-    border: none; border-radius: var(--radius-md); padding: 16px 20px; font-size: 16px; font-weight: 700;
-    cursor: pointer; transition: all 0.2s ease; width: 100%; font-family: inherit;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    border: none; border-radius: var(--radius-lg); padding: 18px 24px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  
-  .btn-danger { background: rgba(255, 82, 82, 0.1); color: var(--red); border: 1px solid rgba(255, 82, 82, 0.3); }
-  .btn-ghost { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
+  .btn:active { transform: scale(0.96); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-primary { background: linear-gradient(135deg, var(--green), var(--green-hover)); color: #000; box-shadow: 0 8px 24px var(--green-glow); }
+  .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.2); }
+  .btn-ghost { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--surface-border); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
   .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
 
-  .progress-wrap { margin-top: 16px; display: none; animation: fadeIn 0.3s ease; }
+  /* ---------- Progress & Player ---------- */
+  .progress-wrap { margin-top: 20px; display: none; animation: fadeIn 0.3s ease; }
   .progress-wrap.active { display: block; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
-  .progress-bar { height: 8px; background: var(--bg-base); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
-  .progress-fill { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; }
+  .progress-label strong { color: var(--green); }
+  .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), #34d399); border-radius: 4px; transition: width 0.3s ease; }
 
-  .player { display: none; margin-top: 20px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .player { display: none; margin-top: 24px; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .player.active { display: block; }
-  audio { width: 100%; margin-bottom: 16px; border-radius: var(--radius-md); outline: none; }
+  audio { width: 100%; margin-bottom: 20px; border-radius: var(--radius-md); outline: none; }
 
   .debug-box {
-    display: none; background: rgba(255, 82, 82, 0.1); border: 1px solid rgba(255, 82, 82, 0.3);
+    display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
     color: var(--red); padding: 16px; border-radius: var(--radius-md); font-size: 13px;
-    margin-top: 16px; font-family: monospace; word-break: break-all; animation: shake 0.4s ease;
+    margin-top: 20px; font-family: monospace; word-break: break-all; animation: shake 0.4s ease;
   }
   .debug-box.active { display: block; }
 
+  /* ---------- Toast ---------- */
   .toast {
-    position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%) translateY(120px);
-    background: #27272a; border: 1px solid var(--border); color: var(--white); padding: 14px 24px;
-    border-radius: 50px; font-size: 14px; font-weight: 600; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%) translateY(20px);
+    background: #18181b; border: 1px solid var(--surface-border); color: var(--text-main); 
+    padding: 14px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; 
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 100; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    display: flex; align-items: center; gap: 8px; white-space: nowrap;
+    display: flex; align-items: center; gap: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
   }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { border-color: var(--red); color: var(--red); }
-  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast.error { border-color: rgba(239, 68, 68, 0.4); color: var(--red); }
+  .toast.success { border-color: rgba(16, 185, 129, 0.4); color: var(--green); }
 
-  .offline { display: none; background: var(--red); color: var(--black); padding: 10px 16px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: 16px; font-weight: 700; text-align: center; animation: slideDown 0.3s ease; }
+  .offline { display: none; background: var(--red); color: #fff; padding: 12px 16px; border-radius: var(--radius-md); font-size: 14px; margin-bottom: 20px; font-weight: 600; text-align: center; animation: slideDown 0.3s ease; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
   .offline.show { display: block; }
 
-  /* ---------- Bottom Navigation ---------- */
+  /* ---------- Bottom Nav ---------- */
   .bottom-nav {
     position: fixed; bottom: 0; left: 0; width: 100%;
-    background: rgba(20, 20, 23, 0.95); backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border);
+    background: rgba(9, 9, 11, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--surface-border);
     display: flex; justify-content: space-around; align-items: center;
     padding: 12px 10px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
     z-index: 50;
   }
   .nav-item {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    color: var(--text-muted); font-size: 11px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: var(--text-muted); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease; text-decoration: none; width: 50%;
   }
-  .nav-item svg { width: 24px; height: 24px; transition: all 0.2s ease; }
+  .nav-item svg { width: 22px; height: 22px; transition: all 0.2s ease; }
   .nav-item.active { color: var(--green); }
-  .nav-item.active svg { stroke: var(--green); filter: drop-shadow(0 0 8px var(--green-glow)); }
-  
+  .nav-item.active svg { stroke: var(--green); filter: drop-shadow(0 0 8px var(--green-glow)); transform: translateY(-2px); }
   .nav-item.active[data-color="purple"] { color: var(--purple); }
   .nav-item.active[data-color="purple"] svg { stroke: var(--purple); filter: drop-shadow(0 0 8px var(--purple-glow)); }
 
+  /* ---------- Animations ---------- */
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  @keyframes slideUpFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<div class="offline" id="offlineBanner">⚠️ You are offline. TTS requires an internet connection.</div>
+<div class="offline" id="offlineBanner">⚠️ You are offline. Please check your connection.</div>
 
 <!-- ================= SCREEN 1: STANDARD TTS ================= -->
 <div id="view-tts" class="view active">
@@ -236,14 +287,14 @@
       <div class="logo">G1</div>
       <div class="brand-text">
         <h1>G1<span>-Voice</span></h1>
-        <div class="status-pill"><span class="status-dot"></span> Standard TTS</div>
+        <div class="status-pill"><span class="status-dot"></span> Standard Studio</div>
       </div>
     </div>
   </header>
 
   <div class="card">
     <p class="card-title">Your Text</p>
-    <textarea id="text-std" class="text-input" placeholder="Type or paste your text here..."></textarea>
+    <textarea id="text-std" class="text-input" placeholder="Type or paste your text here to generate high-quality speech..."></textarea>
     <div class="meta">
       <span id="charCount-std">0 chars</span>
       <span id="chunkCount-std">0 chunks</span>
@@ -251,7 +302,7 @@
   </div>
 
   <div class="card">
-    <p class="card-title">Voice Settings</p>
+    <p class="card-title">Voice Engine</p>
     <div class="row">
       <div>
         <label>Language</label>
@@ -265,7 +316,7 @@
   </div>
 
   <div class="card">
-    <p class="card-title">Audio Effects</p>
+    <p class="card-title">Fine-Tuning</p>
     <div class="slider-group">
       <div class="slider-header"><label>Pitch</label><span class="val" id="pitchVal-std">0</span></div>
       <input type="range" id="pitch-std" class="pitch-slider" min="-100" max="100" value="0" />
@@ -277,21 +328,21 @@
   </div>
 
   <div class="card">
-    <button class="btn btn-primary gen-btn" id="genBtn-std" style="background:linear-gradient(135deg, var(--green), var(--green-dark)); color:var(--black); box-shadow:0 8px 24px var(--green-glow);">
-      Generate Speech
+    <button class="btn btn-primary gen-btn" id="genBtn-std">
+      Generate Audio
     </button>
     
     <div class="debug-box debug-box-el"></div>
     
     <div class="progress-wrap progress-wrap-el">
-      <div class="progress-label"><span>Synthesizing</span><span><strong class="chunks-done">0</strong> / <span class="chunks-total">0</span></span></div>
+      <div class="progress-label"><span>Synthesizing audio</span><span><strong class="chunks-done">0</strong> / <span class="chunks-total">0</span></span></div>
       <div class="progress-bar"><div class="progress-fill progress-fill-el"></div></div>
     </div>
     
     <div class="player player-el">
       <audio class="audio-el" controls></audio>
       <div class="btn-row">
-        <button class="btn btn-ghost download-btn">Download</button>
+        <button class="btn btn-ghost download-btn">Download MP3</button>
         <button class="btn btn-danger reset-btn">Reset</button>
       </div>
     </div>
@@ -302,15 +353,15 @@
 <div id="view-doc" class="view doc-theme">
   <header>
     <div class="brand">
-      <div class="logo" style="font-size:16px;">🎬</div>
+      <div class="logo" style="font-size:20px;">🎬</div>
       <div class="brand-text">
         <h1>Docu<span>Studio</span></h1>
-        <div class="status-pill"><span class="status-dot"></span> Cinematic Voices</div>
+        <div class="status-pill"><span class="status-dot"></span> Cinematic Narration</div>
       </div>
     </div>
   </header>
 
-  <div class="card" style="border-color: rgba(157, 78, 221, 0.3); background: linear-gradient(180deg, rgba(157, 78, 221, 0.05), transparent);">
+  <div class="card" style="border-color: rgba(139, 92, 246, 0.2); background: linear-gradient(180deg, rgba(139, 92, 246, 0.05), transparent);">
     <p class="card-title">Documentary Script</p>
     <textarea id="text-doc" class="text-input" placeholder="Paste your script here. The 6 curated voices below are optimized for cinematic pacing, deep bass, and clear narration."></textarea>
     <div class="meta">
@@ -348,21 +399,21 @@
   </div>
 
   <div class="card">
-    <button class="btn btn-primary gen-btn" id="genBtn-doc" style="background:linear-gradient(135deg, var(--purple), var(--purple-dark)); color:var(--white); box-shadow:0 8px 24px var(--purple-glow);">
+    <button class="btn btn-primary gen-btn" id="genBtn-doc">
       Generate Narration
     </button>
     
     <div class="debug-box debug-box-el"></div>
     
     <div class="progress-wrap progress-wrap-el">
-      <div class="progress-label"><span>Synthesizing</span><span><strong class="chunks-done">0</strong> / <span class="chunks-total">0</span></span></div>
+      <div class="progress-label"><span>Synthesizing audio</span><span><strong class="chunks-done">0</strong> / <span class="chunks-total">0</span></span></div>
       <div class="progress-bar"><div class="progress-fill progress-fill-el"></div></div>
     </div>
     
     <div class="player player-el">
       <audio class="audio-el" controls></audio>
       <div class="btn-row">
-        <button class="btn btn-ghost download-btn">Download</button>
+        <button class="btn btn-ghost download-btn">Download MP3</button>
         <button class="btn btn-danger reset-btn">Reset</button>
       </div>
     </div>
@@ -475,7 +526,7 @@ function initTTSModule(prefix, isDoc) {
     genBtn.disabled=true;
     
     const originalBtnHTML = genBtn.innerHTML;
-    genBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Synthesizing...`;
+    genBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing...`;
 
     const results=new Array(chunks.length);
     let done=0, failed=0, cursor=0;
@@ -536,7 +587,7 @@ function initTTSModule(prefix, isDoc) {
     player.classList.add('active');
     
     if (failed) toast(`${failed} chunk(s) failed`, 'error');
-    else toast('Speech ready!','success');
+    else toast('Audio generated successfully!','success');
     
     genBtn.disabled=false;
     genBtn.innerHTML = originalBtnHTML;
@@ -546,7 +597,7 @@ function initTTSModule(prefix, isDoc) {
     if(!lastBlobUrl) return;
     const a=document.createElement('a');
     a.href=lastBlobUrl;
-    a.download=`g1-voice-${prefix}-${Date.now()}.mp3`;
+    a.download=`G1-Voice-${prefix}-${Date.now()}.mp3`;
     document.body.appendChild(a);
     a.click();
     a.remove();
