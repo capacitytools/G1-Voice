@@ -1,38 +1,73 @@
+import { UniversalEdgeTTS } from 'edge-tts-universal';
+
+// Map FreeApi indexes to Microsoft Edge TTS voice names
+const VOICE_MAP = {
+  // Multilingual
+  1: "en-US-AndrewMultilingualNeural",
+  2: "en-US-AvaMultilingualNeural",
+  3: "en-US-BrianMultilingualNeural",
+  4: "en-US-EmmaMultilingualNeural",
+  // English
+  12: "en-US-AnaNeural",
+  13: "en-US-AndrewNeural",
+  14: "en-US-AriaNeural",
+  15: "en-US-AvaNeural",
+  16: "en-US-BrianNeural",
+  17: "en-US-ChristopherNeural",
+  18: "en-US-EmmaNeural",
+  19: "en-US-EricNeural",
+  20: "en-US-GuyNeural",
+  21: "en-US-JennyNeural",
+  22: "en-US-MichelleNeural",
+  23: "en-US-RogerNeural",
+  24: "en-US-SteffanNeural",
+  25: "en-GB-LibbyNeural",
+  26: "en-GB-MaisieNeural",
+  27: "en-GB-RyanNeural",
+  28: "en-GB-SoniaNeural",
+  29: "en-GB-ThomasNeural",
+  // Spanish
+  55: "es-ES-ElenaNeural",
+  56: "es-ES-TomasNeural",
+  // Chinese
+  100: "zh-CN-XiaoxiaoNeural",
+  101: "zh-CN-XiaoyiNeural",
+  // French
+  114: "fr-FR-CharlineNeural",
+  115: "fr-FR-GerardNeural",
+  // German
+  125: "de-DE-IngridNeural",
+  126: "de-DE-JonasNeural"
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // We add specific headers to mimic a real browser, 
-    // which often bypasses the 502 errors on their end.
-    const response = await fetch('https://freeapi.pro/api/tts', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'audio/mpeg, audio/*',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      },
-      body: JSON.stringify({
-        voiceIndex: req.body.voiceIndex,
-        text: req.body.text,
-        pitch: req.body.pitch || 0,
-        rate: req.body.rate || 0
-      }),
+    const { voiceIndex, text, pitch, rate } = req.body;
+    
+    // Look up the Edge TTS voice name. Fallback to Aria if not mapped.
+    const voiceName = VOICE_MAP[voiceIndex] || "en-US-AriaNeural";
+
+    // Format rate and pitch for Edge TTS (e.g., "+10%" or "-20Hz")
+    const rateStr = rate ? `${rate > 0 ? '+' : ''}${rate}%` : "+0%";
+    const pitchStr = pitch ? `${pitch > 0 ? '+' : ''}${pitch}Hz` : "+0Hz";
+
+    const tts = new UniversalEdgeTTS(text, voiceName);
+    const result = await tts.synthesize({
+      rate: rateStr,
+      pitch: pitchStr
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      return res.status(response.status).json({ error: errText });
-    }
+    const buffer = Buffer.from(await result.audio.arrayBuffer());
 
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Content-Length', buffer.length);
     res.status(200).send(buffer);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Edge TTS Error:', error);
+    res.status(500).json({ error: 'Edge TTS failed: ' + error.message });
   }
 }
