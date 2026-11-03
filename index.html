@@ -749,10 +749,13 @@ function splitText(text,max){
 }
 
 // --- Initialize App ---
-loadVoices();
-initTTSModule('std', false);
-initTTSModule('doc', true);
-checkAuth(); // Check login state on load
+// Wait for DOM to fully load before running auth check and initialization
+document.addEventListener('DOMContentLoaded', () => {
+  loadVoices();
+  initTTSModule('std', false);
+  initTTSModule('doc', true);
+  checkAuth(); 
+});
 
 function updateOnline(){ document.getElementById('offlineBanner').classList.toggle('show',!navigator.onLine); }
 window.addEventListener('online',updateOnline);
