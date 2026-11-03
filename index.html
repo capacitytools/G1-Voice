@@ -75,14 +75,6 @@
   }
   .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
 
-  /* Profile Icon for Logout */
-  .profile-btn {
-    width: 40px; height: 40px; border-radius: 50%; background: var(--surface);
-    border: 1px solid var(--border); display: grid; place-items: center;
-    cursor: pointer; color: var(--text-muted); transition: all 0.2s;
-  }
-  .profile-btn:hover { border-color: var(--green); color: var(--green); }
-
   /* ---------- Documentary Theme Overrides ---------- */
   .doc-theme .brand-text h1 span { color: var(--purple); }
   .doc-theme .logo { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); box-shadow: 0 4px 20px var(--purple-glow); }
@@ -114,7 +106,8 @@
   .meta { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
   .meta span { background: var(--bg-base); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
 
-  .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width: 480px) { .row { grid-template-columns: 1fr; } }
   label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
   
   .select-wrapper { position: relative; }
@@ -206,41 +199,6 @@
   .nav-item.active[data-color="purple"] { color: var(--purple); }
   .nav-item.active[data-color="purple"] svg { stroke: var(--purple); filter: drop-shadow(0 0 8px var(--purple-glow)); }
 
-  /* ---------- Auth Screen ---------- */
-  .auth-container {
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    min-height: 80vh; text-align: center; animation: fadeIn 0.5s ease;
-  }
-  .auth-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 30px 20px; width: 100%;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  }
-  .auth-logo {
-    width: 60px; height: 60px; border-radius: 16px;
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    display: grid; place-items: center; font-weight: 800; font-size: 28px; color: var(--black);
-    box-shadow: 0 8px 30px var(--green-glow); margin: 0 auto 20px;
-  }
-  .auth-title { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
-  .auth-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
-  
-  .input-group { margin-bottom: 16px; text-align: left; }
-  .input-group label { margin-left: 4px; }
-  .input-group input {
-    width: 100%; background: var(--bg-base); color: var(--white);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
-    padding: 14px 16px; font-size: 15px; outline: none; transition: border-color 0.2s;
-  }
-  .input-group input:focus { border-color: var(--green); }
-  
-  .auth-btn {
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    color: var(--black); font-weight: 800; margin-top: 10px;
-  }
-  .auth-switch { margin-top: 24px; font-size: 14px; color: var(--text-muted); }
-  .auth-switch a { color: var(--green); text-decoration: none; font-weight: 700; cursor: pointer; }
-
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
@@ -252,36 +210,8 @@
 
 <div class="offline" id="offlineBanner">⚠️ You are offline. TTS requires an internet connection.</div>
 
-<!-- ================= SCREEN 0: AUTHENTICATION ================= -->
-<div id="view-auth" class="view">
-  <div class="auth-container">
-    <div class="auth-card">
-      <div class="auth-logo">G1</div>
-      <h2 class="auth-title">Welcome to G1-Voice</h2>
-      <p class="auth-sub">Log in with your G1-ID to access your studio.</p>
-
-      <div class="input-group">
-        <label>G1-ID Username or Email</label>
-        <input type="text" id="auth-user" placeholder="e.g. olubunmi" autocomplete="username" />
-      </div>
-      
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password" />
-      </div>
-
-      <button class="btn auth-btn" id="loginBtn">Log In</button>
-
-      <div class="auth-switch">
-        Don't have a G1-ID? <br>
-        <a onclick="goToSignUp()">Create one for free →</a>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ================= SCREEN 1: STANDARD TTS ================= -->
-<div id="view-tts" class="view">
+<div id="view-tts" class="view active">
   <div class="ad-bar">
     <a href="https://g1-id.vercel.app" target="_blank" rel="noopener" class="ad-item">
       <div class="ad-icon">🆔</div>
@@ -308,9 +238,6 @@
         <h1>G1<span>-Voice</span></h1>
         <div class="status-pill"><span class="status-dot"></span> Standard TTS</div>
       </div>
-    </div>
-    <div class="profile-btn" onclick="logout()" title="Log out">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
     </div>
   </header>
 
@@ -381,9 +308,6 @@
         <div class="status-pill"><span class="status-dot"></span> Cinematic Voices</div>
       </div>
     </div>
-    <div class="profile-btn" onclick="logout()" title="Log out">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-    </div>
   </header>
 
   <div class="card" style="border-color: rgba(157, 78, 221, 0.3); background: linear-gradient(180deg, rgba(157, 78, 221, 0.05), transparent);">
@@ -446,7 +370,7 @@
 </div>
 
 <!-- ================= BOTTOM NAVIGATION ================= -->
-<nav class="bottom-nav" id="main-nav" style="display:none;">
+<nav class="bottom-nav">
   <div class="nav-item active" data-color="green" onclick="switchTab('tts')" id="nav-tts">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
     Standard TTS
@@ -460,58 +384,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// --- Auth Logic ---
-function checkAuth() {
-  const user = localStorage.getItem('g1_user');
-  const authView = document.getElementById('view-auth');
-  const mainNav = document.getElementById('main-nav');
-  
-  if (user) {
-    // Logged in
-    authView.classList.remove('active');
-    mainNav.style.display = 'flex';
-    switchTab('tts'); // Default to TTS
-  } else {
-    // Not logged in
-    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-    authView.classList.add('active');
-    mainNav.style.display = 'none';
-  }
-}
-
-function goToSignUp() {
-  // Open G1-ID in a new tab. Replace with the real signup URL if needed.
-  window.open('https://g1-id.vercel.app', '_blank');
-  toast('Create an account, then return here to log in.', 'success');
-}
-
-document.getElementById('loginBtn').addEventListener('click', () => {
-  const user = document.getElementById('auth-user').value.trim();
-  const pass = document.getElementById('auth-pass').value.trim();
-  
-  if (!user || !pass) {
-    toast('Please enter your G1-ID and password', 'error');
-    return;
-  }
-  
-  // Save session locally to simulate secure login
-  localStorage.setItem('g1_user', user);
-  toast('Login successful!', 'success');
-  checkAuth();
-});
-
-function logout() {
-  localStorage.removeItem('g1_user');
-  document.getElementById('auth-user').value = '';
-  document.getElementById('auth-pass').value = '';
-  toast('Logged out', 'success');
-  checkAuth();
-}
-
 // --- Tab Switching Logic ---
 function switchTab(tab) {
-  if (!localStorage.getItem('g1_user')) return;
-  
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   
@@ -749,13 +623,9 @@ function splitText(text,max){
 }
 
 // --- Initialize App ---
-// Wait for DOM to fully load before running auth check and initialization
-document.addEventListener('DOMContentLoaded', () => {
-  loadVoices();
-  initTTSModule('std', false);
-  initTTSModule('doc', true);
-  checkAuth(); 
-});
+loadVoices();
+initTTSModule('std', false);
+initTTSModule('doc', true);
 
 function updateOnline(){ document.getElementById('offlineBanner').classList.toggle('show',!navigator.onLine); }
 window.addEventListener('online',updateOnline);
