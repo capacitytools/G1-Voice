@@ -465,7 +465,7 @@ function initTTSModule(prefix, isDoc) {
   const charCount = $(`charCount`);
   const chunkCount = $(`chunkCount`);
   
-  // FIX: Ensure we target the actual button element by its full ID
+  // Explicitly grab the button by its full ID to prevent any confusion
   const genBtn = document.getElementById(`genBtn-${prefix}`); 
   
   const player = document.querySelector(`#view-${prefix} .player-el`);
@@ -483,6 +483,12 @@ function initTTSModule(prefix, isDoc) {
   const pitchVal = $(`pitchVal`);
   const rateVal = $(`rateVal`);
   
+  // Safety check
+  if(!genBtn) {
+    console.error(`CRITICAL ERROR: Could not find button with ID genBtn-${prefix}`);
+    return;
+  }
+
   pitchEl.addEventListener('input',()=>pitchVal.textContent=pitchEl.value);
   rateEl.addEventListener('input',()=>rateVal.textContent=rateEl.value);
 
@@ -493,7 +499,6 @@ function initTTSModule(prefix, isDoc) {
     chunkCount.textContent=chunks.length+' chunk'+(chunks.length===1?'':'s');
   });
 
-  // Attach the click event
   genBtn.addEventListener('click', async () => {
     const text=textEl.value.trim();
     if(!text){ toast('Enter some text first','error'); return; }
