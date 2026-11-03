@@ -22,7 +22,15 @@ const VOICE_MAP = {
   26: "en-GB-MaisieNeural",
   27: "en-GB-RyanNeural",
   28: "en-GB-SoniaNeural",
-  29: "en-GB-ThomasNeural"
+  29: "en-GB-ThomasNeural",
+  55: "es-ES-ElenaNeural",
+  56: "es-ES-TomasNeural",
+  100: "zh-CN-XiaoxiaoNeural",
+  101: "zh-CN-XiaoyiNeural",
+  114: "fr-FR-CharlineNeural",
+  115: "fr-FR-GerardNeural",
+  125: "de-DE-IngridNeural",
+  126: "de-DE-JonasNeural"
 };
 
 export default async function handler(req, res) {
@@ -37,18 +45,33 @@ export default async function handler(req, res) {
     const rateStr = rate ? `${rate > 0 ? '+' : ''}${rate}%` : "+0%";
     const pitchStr = pitch ? `${pitch > 0 ? '+' : ''}${pitch}Hz` : "+0Hz";
 
-    const tts = new MsEdgeTTS();
+    // Increased timeouts to prevent Microsoft from closing the stream early
+    const tts = new MsEdgeTTS({
+      connectionTimeoutMs: 15000,
+      synthesisTimeoutMs: 30000
+    });
+    
     await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
     
     const { audioStream } = tts.toStream(text, { rate: rateStr, pitch: pitchStr });
 
     const chunks = [];
+    
+    // Catch stream errors so it doesn't crash the whole request
+    audioStream.on('error', (err) => {
+      console.error('Audio Stream Error:', err);
+    });
+
     for await (const chunk of audioStream) {
       chunks.push(chunk);
     }
+    
     const buffer = Buffer.concat(chunks);
-
     tts.close();
+
+    if (buffer.length === 0) {
+      throw new Error("No audio data received");
+    }
 
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Content-Length', buffer.length);
