@@ -116,7 +116,6 @@
     margin-bottom:12px;font-weight:600;text-align:center;
   }
   .offline.show{display:block}
-  /* DEBUGGER STYLE */
   .debug-box {
     display: none; background: rgba(229, 57, 53, 0.1); border: 1px solid var(--red);
     color: #ff8a85; padding: 12px; border-radius: 10px; font-size: 13px;
@@ -177,8 +176,6 @@
 
 <div class="card">
   <button class="btn btn-primary" id="generateBtn">Generate Speech</button>
-
-  <!-- DEBUG BOX IS HERE -->
   <div class="debug-box" id="debugBox"></div>
 
   <div class="progress-wrap" id="progressWrap">
@@ -205,10 +202,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// Use the Vercel proxy for TTS, direct URL for voices
 const VOICES_API = 'https://freeapi.pro/api/voices';
 const TTS_API = '/api/tts'; 
-const CHUNK_SIZE = 1950;
+const CHUNK_SIZE = 200; // Lowered for Edge TTS stability
 const CONCURRENCY = 6;
 
 const $ = id => document.getElementById(id);
@@ -293,7 +289,6 @@ async function synthesizeChunk(chunk,voiceIndex,pitch,rate){
   });
   
   if(!res.ok) {
-    // If the proxy fails, try to read the error text to show the user
     let errText = 'HTTP ' + res.status;
     try { 
       const data = await res.json(); 
@@ -338,16 +333,34 @@ async function generate(){
     while(true){
       const i=cursor++;
       if(i>=chunks.length) return;
-      try{
-        results[i]=await synthesizeChunk(chunks[i],voiceIndex,pitch,rate);
-      }catch(e){
-        failed++; results[i]=null;
-        console.error('Chunk '+i+' failed:',e);
-        
-        // SHOW EXACT ERROR ON SCREEN
-        debugBox.classList.add('active');
-        debugBox.textContent = "⚠️ Error: " + e.message;
+      
+      let success = false;
+      let attempts = 0;
+      let lastError = null;
+
+      // Retry up to 3 times if the API throws an error
+      while (!success && attempts < 3) {
+        try {
+          results[i] = await synthesizeChunk(chunks[i], voiceIndex, pitch, rate);
+          success = true;
+        } catch(e) {
+          lastError = e;
+          attempts++;
+          if (attempts < 3) {
+            await new Promise(r => setTimeout(r, 1500)); 
+          }
+        }
       }
+
+      if (!success) {
+        failed++; 
+        results[i] = null;
+        console.error('Chunk '+i+' failed after 3 attempts:', lastError);
+        
+        debugBox.classList.add('active');
+        debugBox.textContent = "⚠️ Error: " + lastError.message;
+      }
+      
       done++;
       chunksDone.textContent=done;
       progressFill.style.width=(done/chunks.length*100).toFixed(1)+'%';
@@ -372,7 +385,7 @@ async function generate(){
     toast(`${failed} chunk(s) failed — audio may have gaps`, 'error');
   } else {
     toast('Speech ready!','success');
-    debugBox.classList.remove('active'); // hide box if it worked
+    debugBox.classList.remove('active'); 
   }
   
   resetGenButton();
