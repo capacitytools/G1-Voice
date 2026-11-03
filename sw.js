@@ -1,4 +1,4 @@
-const CACHE = 'g1-voice-v2';
+const CACHE = 'g1-voice-v5';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -15,7 +15,11 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  if (url.pathname.startsWith('/api/')) return;
+  
+  // Never cache API calls — always fetch fresh from the network
+  if (url.pathname.startsWith('/api/') || url.hostname === 'freeapi.pro') return;
+  
+  // Cache-first strategy for the app shell (HTML, icons, etc.)
   if (e.request.method === 'GET' && url.origin === location.origin) {
     e.respondWith(
       caches.match(e.request).then(cached =>
