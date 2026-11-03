@@ -8,21 +8,16 @@
 <link rel="manifest" href="/manifest.json" />
 <style>
   :root {
-    --green: #00e676;
-    --green-dark: #00b248;
-    --green-glow: rgba(0, 230, 118, 0.25);
-    --red: #ff5252;
-    --white: #ffffff;
-    --black: #000000;
-    --bg-base: #09090b;
-    --surface: #141417;
-    --surface-hover: #1c1c21;
-    --border: #27272a;
-    --text-main: #f4f4f5;
-    --text-muted: #a1a1aa;
-    --radius-lg: 20px;
-    --radius-md: 14px;
-    --radius-sm: 10px;
+    /* Standard TTS Theme */
+    --green: #00e676; --green-dark: #00b248; --green-glow: rgba(0, 230, 118, 0.25);
+    /* Documentary Theme */
+    --purple: #9d4edd; --purple-dark: #5a189a; --purple-glow: rgba(157, 78, 221, 0.25);
+    --red: #ff5252; --red-dark: #d90429;
+    
+    --white: #ffffff; --black: #000000;
+    --bg-base: #09090b; --surface: #141417; --border: #27272a;
+    --text-main: #f4f4f5; --text-muted: #a1a1aa;
+    --radius-lg: 20px; --radius-md: 14px; --radius-sm: 10px;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -30,48 +25,33 @@
   
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-base);
-    color: var(--text-main);
-    min-height: 100vh;
-    padding: 16px;
-    padding-bottom: calc(24px + env(safe-area-inset-bottom));
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    background-color: var(--bg-base); color: var(--text-main); min-height: 100vh;
+    padding: 16px; padding-bottom: calc(90px + env(safe-area-inset-bottom));
+    max-width: 600px; margin: 0 auto; line-height: 1.5; -webkit-font-smoothing: antialiased;
   }
 
+  /* ---------- Views / Screens ---------- */
+  .view { display: none; animation: fadeIn 0.3s ease; }
+  .view.active { display: block; }
+
   /* ---------- Ad Bar ---------- */
-  .ad-bar {
-    display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
-  }
+  .ad-bar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
   .ad-item {
-    position: relative; overflow: hidden;
-    background: rgba(20, 20, 23, 0.8);
-    border: 1px solid rgba(0, 230, 118, 0.2);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    text-decoration: none; color: var(--white);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    position: relative; overflow: hidden; background: rgba(20, 20, 23, 0.8);
+    border: 1px solid rgba(0, 230, 118, 0.2); border-radius: var(--radius-md);
+    padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
+    text-decoration: none; color: var(--white); transition: all 0.3s ease; backdrop-filter: blur(10px);
   }
   .ad-item:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green-glow); }
   .ad-item.red { border-color: rgba(255, 82, 82, 0.2); }
   .ad-item.red:hover { border-color: var(--red); box-shadow: 0 0 15px rgba(255, 82, 82, 0.2); }
-  
-  /* Shimmer Effect */
   .ad-item::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
     transform: skewX(-20deg); animation: shimmer 4s infinite;
   }
   @keyframes shimmer { 100% { left: 200%; } }
-
-  .ad-icon {
-    font-size: 24px; margin-right: 14px;
-    background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px;
-  }
+  .ad-icon { font-size: 24px; margin-right: 14px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; }
   .ad-content { flex: 1; }
   .ad-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
   .ad-title .star { color: var(--green); font-size: 12px; }
@@ -82,77 +62,60 @@
   .ad-item.red:hover .ad-arrow { color: var(--red); }
 
   /* ---------- Header ---------- */
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 4px 24px;
-  }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px 24px; }
   .brand { display: flex; align-items: center; gap: 12px; }
   .logo {
     width: 42px; height: 42px; border-radius: 12px;
     background: linear-gradient(135deg, var(--green), var(--green-dark));
-    display: grid; place-items: center;
-    font-weight: 800; font-size: 20px; color: var(--black);
+    display: grid; place-items: center; font-weight: 800; font-size: 20px; color: var(--black);
     box-shadow: 0 4px 20px var(--green-glow);
   }
   .brand-text h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.5px; }
   .brand-text h1 span { color: var(--green); }
   .status-pill {
-    font-size: 11px; font-weight: 600; color: var(--green);
-    background: rgba(0, 230, 118, 0.1);
-    padding: 4px 10px; border-radius: 20px;
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-top: 4px;
+    font-size: 11px; font-weight: 600; color: var(--green); background: rgba(0, 230, 118, 0.1);
+    padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px;
   }
-  .status-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--green); box-shadow: 0 0 8px var(--green);
-  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
 
-  /* ---------- Cards ---------- */
+  /* ---------- Documentary Theme Overrides ---------- */
+  .doc-theme .brand-text h1 span { color: var(--purple); }
+  .doc-theme .logo { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); box-shadow: 0 4px 20px var(--purple-glow); }
+  .doc-theme .status-pill { color: var(--purple); background: rgba(157, 78, 221, 0.1); }
+  .doc-theme .status-dot { background: var(--purple); box-shadow: 0 0 8px var(--purple); }
+  .doc-theme .card:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.1); }
+  .doc-theme textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.1); }
+  .doc-theme .slider-header .val { color: var(--purple); background: rgba(157, 78, 221, 0.1); }
+  .doc-theme input[type=range]::-webkit-slider-thumb { background: var(--purple); box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--purple-glow); }
+  .doc-theme .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: var(--white); box-shadow: 0 8px 24px var(--purple-glow); }
+  .doc-theme .progress-label strong { color: var(--purple); }
+  .doc-theme .progress-fill { background: linear-gradient(90deg, var(--purple), #c77dff); }
+
+  /* ---------- Cards & Elements ---------- */
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: transform 0.2s ease, border-color 0.2s ease;
   }
-  .card:focus-within {
-    border-color: rgba(0, 230, 118, 0.4);
-  }
-  .card-title {
-    font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text-muted); margin: 0 0 16px; font-weight: 700;
-  }
+  .card-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin: 0 0 16px; font-weight: 700; }
 
-  /* ---------- Textarea ---------- */
   textarea {
-    width: 100%; min-height: 160px; resize: vertical;
-    background: var(--bg-base); color: var(--text-main);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
-    padding: 16px; font-size: 16px; line-height: 1.6; font-family: inherit;
-    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%; min-height: 160px; resize: vertical; background: var(--bg-base); color: var(--text-main);
+    border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; font-size: 16px;
+    line-height: 1.6; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
   }
-  textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1); }
   textarea::placeholder { color: #52525b; }
   
-  .meta {
-    display: flex; justify-content: space-between;
-    margin-top: 12px; font-size: 12px; color: var(--text-muted); font-weight: 500;
-  }
+  .meta { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
   .meta span { background: var(--bg-base); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
 
-  /* ---------- Selects ---------- */
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media(max-width: 480px) { .row { grid-template-columns: 1fr; } }
+  .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
   label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
   
   .select-wrapper { position: relative; }
   .select-wrapper::after {
     content: "▼"; font-size: 10px; color: var(--text-muted);
-    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-    pointer-events: none;
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none;
   }
   select {
     width: 100%; background: var(--bg-base); color: var(--text-main);
@@ -160,92 +123,53 @@
     padding: 14px 16px; font-size: 15px; outline: none; appearance: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-  select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1); }
 
-  /* ---------- Sliders ---------- */
   .slider-group { margin-bottom: 20px; }
   .slider-group:last-child { margin-bottom: 0; }
   .slider-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
   .slider-header label { margin: 0; }
-  .slider-header .val { 
-    font-size: 13px; font-weight: 700; color: var(--green); 
-    background: rgba(0, 230, 118, 0.1); padding: 2px 8px; border-radius: 10px;
-  }
+  .slider-header .val { font-size: 13px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
   
-  input[type=range] {
-    width: 100%; height: 6px; border-radius: 3px; outline: none;
-    background: var(--bg-base); appearance: none; border: 1px solid var(--border);
-  }
+  input[type=range] { width: 100%; height: 6px; border-radius: 3px; outline: none; background: var(--bg-base); appearance: none; border: 1px solid var(--border); }
   input[type=range]::-webkit-slider-thumb {
-    appearance: none; width: 22px; height: 22px; border-radius: 50%;
-    background: var(--green); cursor: pointer;
-    box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--green-glow);
+    appearance: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
     transition: transform 0.1s;
   }
   input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
-  input[type=range]::-moz-range-thumb {
-    width: 22px; height: 22px; border: none; border-radius: 50%;
-    background: var(--green); cursor: pointer;
-    box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--green-glow);
-  }
 
-  /* ---------- Buttons ---------- */
   .btn {
-    border: none; border-radius: var(--radius-md);
-    padding: 16px 20px; font-size: 16px; font-weight: 700;
+    border: none; border-radius: var(--radius-md); padding: 16px 20px; font-size: 16px; font-weight: 700;
     cursor: pointer; transition: all 0.2s ease; width: 100%; font-family: inherit;
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .btn:active { transform: scale(0.97); }
   .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   
-  .btn-primary {
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    color: var(--black);
-    box-shadow: 0 8px 24px var(--green-glow);
-  }
-  .btn-danger {
-    background: rgba(255, 82, 82, 0.1); color: var(--red); border: 1px solid rgba(255, 82, 82, 0.3);
-  }
-  .btn-ghost {
-    background: var(--surface); color: var(--text-main); border: 1px solid var(--border);
-  }
+  .btn-danger { background: rgba(255, 82, 82, 0.1); color: var(--red); border: 1px solid rgba(255, 82, 82, 0.3); }
+  .btn-ghost { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
   .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
 
-  /* ---------- Progress ---------- */
   .progress-wrap { margin-top: 16px; display: none; animation: fadeIn 0.3s ease; }
   .progress-wrap.active { display: block; }
-  .progress-label {
-    display: flex; justify-content: space-between;
-    font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;
-  }
-  .progress-label strong { color: var(--green); }
+  .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
   .progress-bar { height: 8px; background: var(--bg-base); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
-  .progress-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg, var(--green), #00ff84);
-    border-radius: 4px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  .progress-fill { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-  /* ---------- Player ---------- */
   .player { display: none; margin-top: 20px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .player.active { display: block; }
   audio { width: 100%; margin-bottom: 16px; border-radius: var(--radius-md); outline: none; }
 
-  /* ---------- Debug & Toast ---------- */
   .debug-box {
     display: none; background: rgba(255, 82, 82, 0.1); border: 1px solid rgba(255, 82, 82, 0.3);
     color: var(--red); padding: 16px; border-radius: var(--radius-md); font-size: 13px;
     margin-top: 16px; font-family: monospace; word-break: break-all; animation: shake 0.4s ease;
   }
   .debug-box.active { display: block; }
-  
+
   .toast {
-    position: fixed; left: 50%; bottom: 32px;
-    transform: translateX(-50%) translateY(120px);
-    background: #27272a; border: 1px solid var(--border);
-    color: var(--white); padding: 14px 24px; border-radius: 50px;
-    font-size: 14px; font-weight: 600; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%) translateY(120px);
+    background: #27272a; border: 1px solid var(--border); color: var(--white); padding: 14px 24px;
+    border-radius: 50px; font-size: 14px; font-weight: 600; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 100; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     display: flex; align-items: center; gap: 8px; white-space: nowrap;
   }
@@ -253,166 +177,399 @@
   .toast.error { border-color: var(--red); color: var(--red); }
   .toast.success { border-color: var(--green); color: var(--green); }
 
-  .offline {
-    display: none; background: var(--red); color: var(--black);
-    padding: 10px 16px; border-radius: var(--radius-md); font-size: 13px;
-    margin-bottom: 16px; font-weight: 700; text-align: center;
-    animation: slideDown 0.3s ease;
-  }
+  .offline { display: none; background: var(--red); color: var(--black); padding: 10px 16px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: 16px; font-weight: 700; text-align: center; animation: slideDown 0.3s ease; }
   .offline.show { display: block; }
 
-  footer { text-align: center; font-size: 12px; color: var(--text-muted); padding: 24px 0 8px; font-weight: 500; }
-  footer a { color: var(--green); text-decoration: none; }
+  /* ---------- Bottom Navigation ---------- */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: rgba(20, 20, 23, 0.95); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 12px 10px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--text-muted); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+  }
+  .nav-item svg { width: 24px; height: 24px; transition: all 0.2s ease; }
+  .nav-item.active { color: var(--green); }
+  .nav-item.active svg { stroke: var(--green); filter: drop-shadow(0 0 8px var(--green-glow)); }
+  
+  /* Nav item specific active colors */
+  .nav-item.active[data-color="purple"] { color: var(--purple); }
+  .nav-item.active[data-color="purple"] svg { stroke: var(--purple); filter: drop-shadow(0 0 8px var(--purple-glow)); }
 
-  /* ---------- Animations ---------- */
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
 <div class="offline" id="offlineBanner">⚠️ You are offline. TTS requires an internet connection.</div>
 
-<!-- ADVERTISEMENT BAR -->
-<div class="ad-bar">
-  <a href="https://g1-id.vercel.app" target="_blank" rel="noopener" class="ad-item">
-    <div class="ad-icon">🆔</div>
-    <div class="ad-content">
-      <div class="ad-title">G1-ID <span class="star">★</span></div>
-      <div class="ad-desc">One secure identity for your entire G1 world.</div>
-    </div>
-    <div class="ad-arrow">→</div>
-  </a>
-  
-  <a href="https://g1-autopilot-ai.vercel.app/studio" target="_blank" rel="noopener" class="ad-item red">
-    <div class="ad-icon">🤖</div>
-    <div class="ad-content">
-      <div class="ad-title">G1-Autopilot AI <span class="star">★</span></div>
-      <div class="ad-desc">Your intelligent studio assistant. Log in to start.</div>
-    </div>
-    <div class="ad-arrow">→</div>
-  </a>
-</div>
+<!-- ================= SCREEN 1: STANDARD TTS ================= -->
+<div id="view-tts" class="view active">
+  <div class="ad-bar">
+    <a href="https://g1-id.vercel.app" target="_blank" rel="noopener" class="ad-item">
+      <div class="ad-icon">🆔</div>
+      <div class="ad-content">
+        <div class="ad-title">G1-ID <span class="star">★</span></div>
+        <div class="ad-desc">One secure identity for your entire G1 world.</div>
+      </div>
+      <div class="ad-arrow">→</div>
+    </a>
+    <a href="https://g1-autopilot-ai.vercel.app/studio" target="_blank" rel="noopener" class="ad-item red">
+      <div class="ad-icon">🤖</div>
+      <div class="ad-content">
+        <div class="ad-title">G1-Autopilot AI <span class="star">★</span></div>
+        <div class="ad-desc">Your intelligent studio assistant. Log in to start.</div>
+      </div>
+      <div class="ad-arrow">→</div>
+    </a>
+  </div>
 
-<header>
-  <div class="brand">
-    <div class="logo">G1</div>
-    <div class="brand-text">
-      <h1>G1<span>-Voice</span></h1>
-      <div class="status-pill" id="voiceStatus">
-        <span class="status-dot"></span> Loading voices...
+  <header>
+    <div class="brand">
+      <div class="logo">G1</div>
+      <div class="brand-text">
+        <h1>G1<span>-Voice</span></h1>
+        <div class="status-pill"><span class="status-dot"></span> Standard TTS</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="card">
+    <p class="card-title">Your Text</p>
+    <textarea id="text-std" class="text-input" placeholder="Type or paste your text here..."></textarea>
+    <div class="meta">
+      <span id="charCount-std">0 chars</span>
+      <span id="chunkCount-std">0 chunks</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Voice Settings</p>
+    <div class="row">
+      <div>
+        <label>Language</label>
+        <div class="select-wrapper"><select id="lang-std" class="lang-select"></select></div>
+      </div>
+      <div>
+        <label>Voice</label>
+        <div class="select-wrapper"><select id="voice-std" class="voice-select"></select></div>
       </div>
     </div>
   </div>
-</header>
 
-<div class="card">
-  <p class="card-title">Your Text</p>
-  <textarea id="text" placeholder="Type or paste your text here. G1-Voice automatically splits long text and merges the audio flawlessly."></textarea>
-  <div class="meta">
-    <span id="charCount">0 chars</span>
-    <span id="chunkCount">0 chunks</span>
+  <div class="card">
+    <p class="card-title">Audio Effects</p>
+    <div class="slider-group">
+      <div class="slider-header"><label>Pitch</label><span class="val" id="pitchVal-std">0</span></div>
+      <input type="range" id="pitch-std" class="pitch-slider" min="-100" max="100" value="0" />
+    </div>
+    <div class="slider-group">
+      <div class="slider-header"><label>Speed</label><span class="val" id="rateVal-std">0</span></div>
+      <input type="range" id="rate-std" class="rate-slider" min="-100" max="100" value="0" />
+    </div>
   </div>
-</div>
 
-<div class="card">
-  <p class="card-title">Voice Settings</p>
-  <div class="row">
-    <div>
-      <label for="language">Language</label>
-      <div class="select-wrapper">
-        <select id="language"></select>
+  <div class="card">
+    <button class="btn btn-primary gen-btn" id="genBtn-std" style="background:linear-gradient(135deg, var(--green), var(--green-dark)); color:var(--black); box-shadow:0 8px 24px var(--green-glow);">
+      Generate Speech
+    </button>
+    
+    <div class="debug-box debug-box-el"></div>
+    
+    <div class="progress-wrap progress-wrap-el">
+      <div class="progress-label"><span>Synthesizing</span><span><strong class="chunks-done">0</strong> / <span class="chunks-total">0</span></span></div>
+      <div class="progress-bar"><div class="progress-fill progress-fill-el"></div></div>
+    </div>
+    
+    <div class="player player-el">
+      <audio class="audio-el" controls></audio>
+      <div class="btn-row">
+        <button class="btn btn-ghost download-btn">Download</button>
+        <button class="btn btn-danger reset-btn">Reset</button>
       </div>
     </div>
-    <div>
-      <label for="voice">Voice</label>
-      <div class="select-wrapper">
-        <select id="voice"></select>
+  </div>
+</div>
+
+<!-- ================= SCREEN 2: DOCUMENTARY STUDIO ================= -->
+<div id="view-doc" class="view doc-theme">
+  <header>
+    <div class="brand">
+      <div class="logo" style="font-size:16px;">🎬</div>
+      <div class="brand-text">
+        <h1>Docu<span>Studio</span></h1>
+        <div class="status-pill"><span class="status-dot"></span> Cinematic Voices</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="card" style="border-color: rgba(157, 78, 221, 0.3); background: linear-gradient(180deg, rgba(157, 78, 221, 0.05), transparent);">
+    <p class="card-title">Documentary Script</p>
+    <textarea id="text-doc" class="text-input" placeholder="Paste your script here. The 6 curated voices below are optimized for cinematic pacing, deep bass, and clear narration."></textarea>
+    <div class="meta">
+      <span id="charCount-doc">0 chars</span>
+      <span id="chunkCount-doc">0 chunks</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Select Narrator</p>
+    <div class="select-wrapper">
+      <select id="voice-doc" class="voice-select">
+        <!-- 4 Males -->
+        <option value="13">Andrew (Male) — Deep, authoritative</option>
+        <option value="24">Steffan (Male) — Gritty, storytelling</option>
+        <option value="20">Guy (Male) — Classic news anchor</option>
+        <option value="16">Brian (Male) — Smooth, modern documentary</option>
+        <!-- 2 Females -->
+        <option value="14">Aria (Female) — Clear, engaging narrator</option>
+        <option value="21">Jenny (Female) — Warm, natural storytelling</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Narration Style</p>
+    <div class="slider-group">
+      <div class="slider-header"><label>Pitch</label><span class="val" id="pitchVal-doc">-5</span></div>
+      <input type="range" id="pitch-doc" class="pitch-slider" min="-100" max="100" value="-5" />
+    </div>
+    <div class="slider-group">
+      <div class="slider-header"><label>Speed</label><span class="val" id="rateVal-doc">-10</span></div>
+      <input type="range" id="rate-doc" class="rate-slider" min="-100" max="100" value="-10" />
+    </div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-primary gen-btn" id="genBtn-doc" style="background:linear-gradient(135deg, var(--purple), var(--purple-dark)); color:var(--white); box-shadow:0 8px 24px var(--purple-glow);">
+      Generate Narration
+    </button>
+    
+    <div class="debug-box debug-box-el"></div>
+    
+    <div class="progress-wrap progress-wrap-el">
+      <div class="progress-label"><span>Synthesizing</span><span><strong class="chunks-done">0</strong> / <span class="chunks-total">0</span></span></div>
+      <div class="progress-bar"><div class="progress-fill progress-fill-el"></div></div>
+    </div>
+    
+    <div class="player player-el">
+      <audio class="audio-el" controls></audio>
+      <div class="btn-row">
+        <button class="btn btn-ghost download-btn">Download</button>
+        <button class="btn btn-danger reset-btn">Reset</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="card">
-  <p class="card-title">Audio Effects</p>
-  <div class="slider-group">
-    <div class="slider-header">
-      <label>Pitch</label>
-      <span class="val" id="pitchVal">0</span>
-    </div>
-    <input type="range" id="pitch" min="-100" max="100" value="0" />
+<!-- ================= BOTTOM NAVIGATION ================= -->
+<nav class="bottom-nav">
+  <div class="nav-item active" data-color="green" onclick="switchTab('tts')" id="nav-tts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+    Standard TTS
   </div>
-  <div class="slider-group">
-    <div class="slider-header">
-      <label>Speed</label>
-      <span class="val" id="rateVal">0</span>
-    </div>
-    <input type="range" id="rate" min="-100" max="100" value="0" />
+  <div class="nav-item" data-color="purple" onclick="switchTab('doc')" id="nav-doc">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>
+    Documentary
   </div>
-</div>
-
-<div class="card">
-  <button class="btn btn-primary" id="generateBtn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
-    Generate Speech
-  </button>
-  
-  <div class="debug-box" id="debugBox"></div>
-
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-label">
-      <span>Synthesizing chunks</span>
-      <span><strong id="chunksDone">0</strong> / <span id="chunksTotal">0</span></span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  </div>
-
-  <div class="player" id="player">
-    <audio id="audio" controls></audio>
-    <div class="btn-row">
-      <button class="btn btn-ghost" id="downloadBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-        Download MP3
-      </button>
-      <button class="btn btn-danger" id="resetBtn">Reset</button>
-    </div>
-  </div>
-</div>
-
-<footer>
-  Powered by <a href="https://freeapi.pro/speech" target="_blank" rel="noopener">FreeApi.Pro</a> · 580+ voices · 100% free
-</footer>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// --- Tab Switching Logic ---
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById(`view-${tab}`).classList.add('active');
+  document.getElementById(`nav-${tab}`).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// --- Global Variables ---
 const VOICES_API = 'https://freeapi.pro/api/voices';
 const TTS_API = '/api/tts'; 
 const CHUNK_SIZE = 200; 
 const CONCURRENCY = 3;  
 
-const $ = id => document.getElementById(id);
-const textEl=$('text'), charCount=$('charCount'), chunkCount=$('chunkCount');
-const langSelect=$('language'), voiceSelect=$('voice');
-const pitchEl=$('pitch'), rateEl=$('rate'), pitchVal=$('pitchVal'), rateVal=$('rateVal');
-const genBtn=$('generateBtn'), progressWrap=$('progressWrap');
-const chunksDone=$('chunksDone'), chunksTotal=$('chunksTotal'), progressFill=$('progressFill');
-const player=$('player'), audioEl=$('audio'), downloadBtn=$('downloadBtn'), resetBtn=$('resetBtn');
-const voiceStatus=$('voiceStatus'), toastEl=$('toast'), offlineBanner=$('offlineBanner');
-const debugBox=$('debugBox');
-
-let VOICES=[], GROUPED={}, lastBlobUrl=null;
-
+let VOICES=[], GROUPED={};
 let toastTimer;
+
 function toast(msg,type=''){
+  const toastEl = document.getElementById('toast');
   toastEl.textContent=msg; 
   toastEl.className='toast show '+type;
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>toastEl.classList.remove('show'),3000);
 }
 
+// --- Core Engine Setup ---
+function initTTSModule(prefix, isDoc) {
+  const $ = id => document.getElementById(`${id}-${prefix}`);
+  
+  const textEl = $(`text`);
+  const charCount = $(`charCount`);
+  const chunkCount = $(`chunkCount`);
+  const genBtn = $(`genBtn`);
+  const player = document.querySelector(`#view-${prefix} .player-el`);
+  const audioEl = document.querySelector(`#view-${prefix} .audio-el`);
+  const progressWrap = document.querySelector(`#view-${prefix} .progress-wrap-el`);
+  const chunksDone = document.querySelector(`#view-${prefix} .chunks-done`);
+  const chunksTotal = document.querySelector(`#view-${prefix} .chunks-total`);
+  const progressFill = document.querySelector(`#view-${prefix} .progress-fill-el`);
+  const debugBox = document.querySelector(`#view-${prefix} .debug-box-el`);
+
+  let lastBlobUrl = null;
+  
+  // Sliders
+  const pitchEl = $(`pitch`);
+  const rateEl = $(`rate`);
+  const pitchVal = $(`pitchVal`);
+  const rateVal = $(`rateVal`);
+  
+  pitchEl.addEventListener('input',()=>pitchVal.textContent=pitchEl.value);
+  rateEl.addEventListener('input',()=>rateVal.textContent=rateEl.value);
+
+  textEl.addEventListener('input',()=>{
+    const t=textEl.value;
+    charCount.textContent=t.length+' chars';
+    const chunks=splitText(t,CHUNK_SIZE);
+    chunkCount.textContent=chunks.length+' chunk'+(chunks.length===1?'':'s');
+  });
+
+  // Buttons
+  genBtn.addEventListener('click', async () => {
+    const text=textEl.value.trim();
+    if(!text){ toast('Enter some text first','error'); return; }
+    
+    // Get voice index (either from select or hardcoded doc list)
+    let voiceIndex;
+    if (isDoc) {
+      voiceIndex = parseInt($(`voice`).value, 10);
+    } else {
+      voiceIndex = parseInt($(`voice`).value, 10);
+      if(!voiceIndex){ toast('Select a voice','error'); return; }
+    }
+
+    const pitch=parseInt(pitchEl.value,10);
+    const rate=parseInt(rateEl.value,10);
+
+    const chunks=splitText(text,CHUNK_SIZE);
+    if(!chunks.length){ toast('Nothing to synthesize','error'); return; }
+
+    player.classList.remove('active');
+    debugBox.classList.remove('active');
+    debugBox.textContent = '';
+    
+    if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
+    
+    progressWrap.classList.add('active');
+    chunksTotal.textContent=chunks.length;
+    chunksDone.textContent='0';
+    progressFill.style.width='0%';
+    genBtn.disabled=true;
+    
+    const originalBtnHTML = genBtn.innerHTML;
+    genBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Synthesizing...`;
+
+    const results=new Array(chunks.length);
+    let done=0, failed=0, cursor=0;
+
+    async function worker(){
+      while(true){
+        const i=cursor++;
+        if(i>=chunks.length) return;
+        
+        let success = false;
+        let attempts = 0;
+        let lastError = null;
+
+        while (!success && attempts < 3) {
+          try {
+            const res = await fetch(TTS_API, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ voiceIndex, text: chunks[i], pitch, rate })
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const blob = await res.blob();
+            if (!blob.size) throw new Error('Empty audio');
+            results[i] = blob;
+            success = true;
+          } catch(e) {
+            lastError = e;
+            attempts++;
+            if (attempts < 3) await new Promise(r => setTimeout(r, 1500)); 
+          }
+        }
+
+        if (!success) {
+          failed++; 
+          results[i] = null;
+          debugBox.classList.add('active');
+          debugBox.textContent = "⚠️ Error: " + lastError.message;
+        }
+        
+        done++;
+        chunksDone.textContent=done;
+        progressFill.style.width=(done/chunks.length*100).toFixed(1)+'%';
+      }
+    }
+
+    await Promise.all(Array.from({length:Math.min(CONCURRENCY,chunks.length)},worker));
+
+    const blobs=results.filter(Boolean);
+    if(!blobs.length){
+      toast('All chunks failed','error');
+      genBtn.disabled=false; genBtn.innerHTML = originalBtnHTML;
+      return;
+    }
+
+    const merged=new Blob(blobs,{type:'audio/mpeg'});
+    lastBlobUrl=URL.createObjectURL(merged);
+    audioEl.src=lastBlobUrl;
+    player.classList.add('active');
+    
+    if (failed) toast(`${failed} chunk(s) failed`, 'error');
+    else toast('Speech ready!','success');
+    
+    genBtn.disabled=false;
+    genBtn.innerHTML = originalBtnHTML;
+  });
+
+  // Download & Reset
+  document.querySelector(`#view-${prefix} .download-btn`).addEventListener('click', () => {
+    if(!lastBlobUrl) return;
+    const a=document.createElement('a');
+    a.href=lastBlobUrl;
+    a.download=`g1-voice-${prefix}-${Date.now()}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+
+  document.querySelector(`#view-${prefix} .reset-btn`).addEventListener('click', () => {
+    if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
+    audioEl.removeAttribute('src'); audioEl.load();
+    player.classList.remove('active');
+    progressWrap.classList.remove('active');
+    debugBox.classList.remove('active');
+    progressFill.style.width='0%';
+  });
+}
+
+// --- Voice Fetching ---
 async function loadVoices(){
   try{
     const res=await fetch(VOICES_API);
@@ -420,28 +577,29 @@ async function loadVoices(){
     const data=await res.json();
     if(!data.success) throw new Error('API failure');
     VOICES=data.voices||[]; GROUPED=data.grouped||{};
+    
+    const langSelect = document.getElementById('lang-std');
+    const voiceSelect = document.getElementById('voice-std');
+    
     const langs=Object.keys(GROUPED).sort((a,b)=>{
       if(a==='Multilingual') return -1;
       if(b==='Multilingual') return 1;
       return a.localeCompare(b);
     });
+    
     langSelect.innerHTML=langs.map(l=>`<option value="${l}">${l} (${GROUPED[l].length})</option>`).join('');
-    
-    voiceStatus.innerHTML = `<span class="status-dot"></span> ${data.total} voices ready`;
-    
     langSelect.value=langs.includes('English')?'English':langs[0];
+    
+    function populateVoiceSelect(){
+      const list=GROUPED[langSelect.value]||[];
+      voiceSelect.innerHTML=list.map(v=>`<option value="${v.index}">${v.name} — ${v.gender}</option>`).join('');
+    }
     populateVoiceSelect();
-  }catch(e){
-    voiceStatus.innerHTML = `<span class="status-dot" style="background:var(--red);box-shadow:0 0 8px var(--red)"></span> Voices unavailable`;
-    voiceStatus.style.color = 'var(--red)';
-    voiceStatus.style.background = 'rgba(255, 82, 82, 0.1)';
-    toast('Could not load voices: '+e.message,'error');
-  }
-}
+    langSelect.addEventListener('change', populateVoiceSelect);
 
-function populateVoiceSelect(){
-  const list=GROUPED[langSelect.value]||[];
-  voiceSelect.innerHTML=list.map(v=>`<option value="${v.index}">${v.name} — ${v.gender}</option>`).join('');
+  }catch(e){
+    console.error('Could not load voices:', e);
+  }
 }
 
 function splitText(text,max){
@@ -471,154 +629,13 @@ function splitText(text,max){
   push(); return chunks;
 }
 
-async function synthesizeChunk(chunk,voiceIndex,pitch,rate){
-  const res=await fetch(TTS_API,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({voiceIndex,text:chunk,pitch,rate})
-  });
-  
-  if(!res.ok) {
-    let errText = 'HTTP ' + res.status;
-    try { 
-      const data = await res.json(); 
-      if (data.error) errText += ' - ' + data.error; 
-    } catch(e) {}
-    throw new Error(errText);
-  }
-  
-  const blob=await res.blob();
-  if(!blob.size) throw new Error('Empty audio returned');
-  return blob;
-}
+// --- Initialize App ---
+loadVoices();
+initTTSModule('std', false);
+initTTSModule('doc', true);
 
-async function generate(){
-  const text=textEl.value.trim();
-  if(!text){ toast('Enter some text first','error'); return; }
-  const voiceIndex=parseInt(voiceSelect.value,10);
-  if(!voiceIndex){ toast('Select a voice','error'); return; }
-  const pitch=parseInt(pitchEl.value,10);
-  const rate=parseInt(rateEl.value,10);
-
-  const chunks=splitText(text,CHUNK_SIZE);
-  if(!chunks.length){ toast('Nothing to synthesize','error'); return; }
-
-  player.classList.remove('active');
-  debugBox.classList.remove('active');
-  debugBox.textContent = '';
-  
-  if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
-  
-  progressWrap.classList.add('active');
-  chunksTotal.textContent=chunks.length;
-  chunksDone.textContent='0';
-  progressFill.style.width='0%';
-  genBtn.disabled=true;
-  
-  genBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Synthesizing...`;
-
-  const results=new Array(chunks.length);
-  let done=0, failed=0, cursor=0;
-
-  async function worker(){
-    while(true){
-      const i=cursor++;
-      if(i>=chunks.length) return;
-      
-      let success = false;
-      let attempts = 0;
-      let lastError = null;
-
-      while (!success && attempts < 3) {
-        try {
-          results[i] = await synthesizeChunk(chunks[i], voiceIndex, pitch, rate);
-          success = true;
-        } catch(e) {
-          lastError = e;
-          attempts++;
-          if (attempts < 3) {
-            await new Promise(r => setTimeout(r, 1500)); 
-          }
-        }
-      }
-
-      if (!success) {
-        failed++; 
-        results[i] = null;
-        console.error('Chunk '+i+' failed after 3 attempts:', lastError);
-        
-        debugBox.classList.add('active');
-        debugBox.textContent = "⚠️ Error: " + lastError.message;
-      }
-      
-      done++;
-      chunksDone.textContent=done;
-      progressFill.style.width=(done/chunks.length*100).toFixed(1)+'%';
-    }
-  }
-
-  await Promise.all(Array.from({length:Math.min(CONCURRENCY,chunks.length)},worker));
-
-  const blobs=results.filter(Boolean);
-  if(!blobs.length){
-    toast('All chunks failed — check error message','error');
-    resetGenButton();
-    return;
-  }
-
-  const merged=new Blob(blobs,{type:'audio/mpeg'});
-  lastBlobUrl=URL.createObjectURL(merged);
-  audioEl.src=lastBlobUrl;
-  player.classList.add('active');
-  
-  if (failed) {
-    toast(`${failed} chunk(s) failed — audio may have gaps`, 'error');
-  } else {
-    toast('Speech ready!','success');
-    debugBox.classList.remove('active'); 
-  }
-  
-  resetGenButton();
-}
-
-function resetGenButton(){
-  genBtn.disabled=false;
-  genBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg> Generate Speech`;
-}
-
-function download(){
-  if(!lastBlobUrl) return;
-  const a=document.createElement('a');
-  a.href=lastBlobUrl;
-  a.download='g1-voice-'+Date.now()+'.mp3';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-function reset(){
-  if(lastBlobUrl){ URL.revokeObjectURL(lastBlobUrl); lastBlobUrl=null; }
-  audioEl.removeAttribute('src'); audioEl.load();
-  player.classList.remove('active');
-  progressWrap.classList.remove('active');
-  debugBox.classList.remove('active');
-  progressFill.style.width='0%';
-}
-
-textEl.addEventListener('input',()=>{
-  const t=textEl.value;
-  charCount.textContent=t.length+' chars';
-  const chunks=splitText(t,CHUNK_SIZE);
-  chunkCount.textContent=chunks.length+' chunk'+(chunks.length===1?'':'s');
-});
-langSelect.addEventListener('change',populateVoiceSelect);
-pitchEl.addEventListener('input',()=>pitchVal.textContent=pitchEl.value);
-rateEl.addEventListener('input',()=>rateVal.textContent=rateEl.value);
-genBtn.addEventListener('click',generate);
-downloadBtn.addEventListener('click',download);
-resetBtn.addEventListener('click',reset);
-
-function updateOnline(){ offlineBanner.classList.toggle('show',!navigator.onLine); }
+// Handle offline banner
+function updateOnline(){ document.getElementById('offlineBanner').classList.toggle('show',!navigator.onLine); }
 window.addEventListener('online',updateOnline);
 window.addEventListener('offline',updateOnline);
 updateOnline();
@@ -628,12 +645,6 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js').catch(e=>console.warn('SW failed',e));
   });
 }
-
-const style = document.createElement('style');
-style.textContent = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
-document.head.appendChild(style);
-
-loadVoices();
 </script>
 </body>
 </html>
