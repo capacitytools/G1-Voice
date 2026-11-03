@@ -11,14 +11,20 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).send(errorText);
+      return res.status(response.status).json({ error: 'Upstream failed' });
     }
 
-    const audioBuffer = await response.arrayBuffer();
+    // Get the audio as an ArrayBuffer
+    const arrayBuffer = await response.arrayBuffer();
+    
+    // Convert to base64 or send directly as a buffer
+    const buffer = Buffer.from(arrayBuffer);
+    
     res.setHeader('Content-Type', 'audio/mpeg');
-    res.send(Buffer.from(audioBuffer));
+    res.setHeader('Content-Length', buffer.length);
+    res.status(200).send(buffer);
   } catch (error) {
-    res.status(502).json({ error: 'Proxy failed: ' + error.message });
+    console.error('Proxy Error:', error);
+    res.status(500).json({ error: error.message });
   }
 }
