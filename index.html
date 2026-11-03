@@ -41,6 +41,46 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ---------- Ad Bar ---------- */
+  .ad-bar {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
+  }
+  .ad-item {
+    position: relative; overflow: hidden;
+    background: rgba(20, 20, 23, 0.8);
+    border: 1px solid rgba(0, 230, 118, 0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    text-decoration: none; color: var(--white);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .ad-item:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green-glow); }
+  .ad-item.red { border-color: rgba(255, 82, 82, 0.2); }
+  .ad-item.red:hover { border-color: var(--red); box-shadow: 0 0 15px rgba(255, 82, 82, 0.2); }
+  
+  /* Shimmer Effect */
+  .ad-item::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: skewX(-20deg); animation: shimmer 4s infinite;
+  }
+  @keyframes shimmer { 100% { left: 200%; } }
+
+  .ad-icon {
+    font-size: 24px; margin-right: 14px;
+    background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px;
+  }
+  .ad-content { flex: 1; }
+  .ad-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+  .ad-title .star { color: var(--green); font-size: 12px; }
+  .ad-item.red .ad-title .star { color: var(--red); }
+  .ad-desc { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+  .ad-arrow { font-size: 18px; color: var(--text-muted); margin-left: 10px; transition: transform 0.2s; }
+  .ad-item:hover .ad-arrow { transform: translateX(4px); color: var(--green); }
+  .ad-item.red:hover .ad-arrow { color: var(--red); }
+
   /* ---------- Header ---------- */
   header {
     display: flex; align-items: center; justify-content: space-between;
@@ -234,6 +274,27 @@
 <body>
 
 <div class="offline" id="offlineBanner">⚠️ You are offline. TTS requires an internet connection.</div>
+
+<!-- ADVERTISEMENT BAR -->
+<div class="ad-bar">
+  <a href="https://g1-id.vercel.app" target="_blank" rel="noopener" class="ad-item">
+    <div class="ad-icon">🆔</div>
+    <div class="ad-content">
+      <div class="ad-title">G1-ID <span class="star">★</span></div>
+      <div class="ad-desc">One secure identity for your entire G1 world.</div>
+    </div>
+    <div class="ad-arrow">→</div>
+  </a>
+  
+  <a href="https://g1-autopilot-ai.vercel.app/studio" target="_blank" rel="noopener" class="ad-item red">
+    <div class="ad-icon">🤖</div>
+    <div class="ad-content">
+      <div class="ad-title">G1-Autopilot AI <span class="star">★</span></div>
+      <div class="ad-desc">Your intelligent studio assistant. Log in to start.</div>
+    </div>
+    <div class="ad-arrow">→</div>
+  </a>
+</div>
 
 <header>
   <div class="brand">
@@ -454,7 +515,6 @@ async function generate(){
   progressFill.style.width='0%';
   genBtn.disabled=true;
   
-  // Update button text with spinner icon
   genBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Synthesizing...`;
 
   const results=new Array(chunks.length);
@@ -569,7 +629,6 @@ if('serviceWorker' in navigator){
   });
 }
 
-// Add spinner animation to document head
 const style = document.createElement('style');
 style.textContent = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
 document.head.appendChild(style);
