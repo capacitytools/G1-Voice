@@ -440,10 +440,7 @@ function toast(msg,type=''){
   toastTimer=setTimeout(()=>toastEl.classList.remove('show'),3000);
 }
 
-// --- Core Engine Setup ---
-// We removed the complex dynamic module logic that was blocking the buttons.
-// We are now attaching the event listeners directly to the exact elements.
-
+// --- Core Engine ---
 async function generateAudio(prefix, isDoc) {
   const textEl = document.getElementById(`text-${prefix}`);
   const voiceSelect = document.getElementById(`voice-${prefix}`);
@@ -554,7 +551,7 @@ async function generateAudio(prefix, isDoc) {
   genBtn.innerHTML = originalBtnHTML;
 }
 
-// Attach listeners directly
+// Attach direct listeners
 document.getElementById('genBtn-std').addEventListener('click', () => generateAudio('std', false));
 document.getElementById('genBtn-doc').addEventListener('click', () => generateAudio('doc', true));
 
@@ -631,6 +628,7 @@ async function loadVoices(){
 
   }catch(e){
     console.error('Could not load voices:', e);
+    document.getElementById('lang-std').innerHTML = '<option>Error loading voices</option>';
   }
 }
 
